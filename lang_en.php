@@ -1,0 +1,61 @@
+<?php
+$lang = [
+    'back' => 'Back',
+    'close'=> 'Close',
+    'title' => 'Teaching to develop, inspire...',
+    'history' => 'The history of the college in significant events',
+    'history_name' => 'The history of the college in names...',
+    'projects' => 'Educational projects of the college',
+    'specialties' => 'The history of the development of our specialties',
+    'teachers' => 'Time chose',
+    'students' => 'The glory page of the college students.',
+    'videos' => 'We are a source of demand for innovations',
+    'group'=> 'Group',
+    'more'=> 'More',
+    'description' => 'Description',
+
+    'years' => 'years',
+
+    'lookachstudent'=> 'Look achievements',
+    'achstudent' => 'Student achievements',
+    'Ourstudent'=> 'Our students',
+
+    'historytitle'=> 'HISTORY OF THE COLLEGE IN SIGNIFICANT EVENTS',
+
+    'one_title' => 'TEACHING TO DEVELOP, INSPIRE...',
+    'one_paragraph' => 'Dear guest, you are provided with a unique opportunity to look into the history of our educational institution through the eyes of the custodians of its educational legacy. Here, academic achievements, unique projects and results, personal memories come together, creating a mosaic that reveals the richness and diversity of educational experience. As you go through the pages of this history, you will immerse yourself in the world of knowledge and creativity, feeling the warmth and inspiration that fill the walls of our college...',
+    'director_title' => 'SAPAROVA ASELY SAGINBAYEVNA: "TEACHING, DEVELOPING, INSPIRING..."',
+    'director_paragraph' => 'In the field of education, three words - "teaching, developing, inspiring," - become the theme for the most important questions and reflections. How can we convey knowledge, inspire others, and contribute to their development? The answer to this question is the key to the unique learning experience offered by our college.',
+    'hisdirectortitle'=> 'Directors of the educational institution',
+    'hisdirectortext'=> 'Over the years of the existence of the educational institution, its name and organizational and legal form have changed depending on political, socio-economic, and educational reforms in the country. Accordingly, the appointment of the first leaders depended on the professional tasks that stood at different stages of the educational activities of the educational institution.',
+
+    'veterantitlemenu'=> 'Veteran teachers of the educational institution',
+    'veterantitle'=> 'College veterans',
+
+    'teaching' => 'Teaching is not just the process of transferring information; it is the art of arousing interest, encouraging research thinking, and helping students see the world in a broader and deeper way. Our teachers are not just sources of knowledge, they are mentors who help students gain confidence in their abilities and open up new horizons. Our college strives to ensure that every student not only acquires knowledge but also feels an internal motivation for self-development and self-expression.',
+    'education' => 'EDUCATION',
+    'yearwork' => 'WORK IN COLLEGE',
+    'achievements' => 'Awards, Titles, Achievements',
+    'lookachteacher'=> 'View awards and achievements',
+    'work'=> 'JOB TITLE',
+
+    'pv_title'=> 'We - the source of demand for innovation',
+    'photo'=> 'Photo archive',
+    'video'=> 'Video archive',
+
+    'developing' => 'Developing is the pursuit of continuous improvement, both individually and collectively. Our college is open to innovative ideas, where every student has the opportunity to realize their potential, develop their skills, and become part of a cultural community, contributing to personal growth and the development of society as a whole. Our task is to create conditions for the active and harmonious development of every member of the educational community.',
+
+    'inspiring' => 'Inspiring is creating an atmosphere of creativity, where ideas boldly transition from the realm of dreams to reality. Our new center "ҚҰРМЕТ ЗАЛЫ" is a place where history, traditions, and modern research meet and interact, inspiring the teaching staff to new achievements and creative feats.',
+
+    'college_vision' => 'Our college strives to become a place where students not only gain knowledge but also form themselves as individuals, ready for independent life and professional activities. After all, it is in the ability to learn, inspire, and develop oneself that the strength lies, capable of changing the world for the better.',
+
+    'mission' => '"Teaching, developing, inspiring" is not only the mission of our college but also a philosophy that helps create a unique educational space where everyone can find their path to knowledge, understanding, and self-realization.',
+
+    'history_title' => 'College History in Significant Events',
+    'delete_confirm' => 'Are you sure you want to delete this history?',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'add_history' => 'Add History',
+    'message_success' => 'History updated successfully!',
+    'message_deleted' => 'History deleted successfully!',
+];
