@@ -40,91 +40,108 @@ if ($columns_result) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $first_name = mysqli_real_escape_string($conn, $_POST['first_name'] ?? '');
-    $last_name = mysqli_real_escape_string($conn, $_POST['last_name'] ?? '');
+    $username = trim((string)($_POST['username'] ?? ''));
+    $first_name = trim((string)($_POST['first_name'] ?? ''));
+    $last_name = trim((string)($_POST['last_name'] ?? ''));
     $role_id = (int)($_POST['role_id'] ?? 0);
     $is_active = isset($_POST['is_active']) ? 1 : 0;
-    $change_password = isset($_POST['change_password']) ? 1 : 0;
-    
-    $password = '';
-    $confirm_password = '';
-    
-    if ($change_password) {
-        $password = $_POST['password'];
-        $confirm_password = $_POST['confirm_password'];
-    }
+    $password = (string)($_POST['password'] ?? '');
+    $confirm_password = (string)($_POST['confirm_password'] ?? '');
+    $change_password = ($password !== '' || $confirm_password !== '');
 
     $needs_name = in_array('first_name', $existing_columns, true) || in_array('last_name', $existing_columns, true);
 
-    // Валидация
-    if (empty($username) || ($needs_name && (empty($first_name) || empty($last_name)))) {
+    if ($username === '' || ($needs_name && ($first_name === '' || $last_name === ''))) {
         $error = 'Пожалуйста, заполните все обязательные поля';
     } elseif ($change_password && $password !== $confirm_password) {
         $error = 'Пароли не совпадают';
     } elseif ($change_password && strlen($password) < 6) {
         $error = 'Пароль должен содержать минимум 6 символов';
     } else {
-        // Проверяем, не существует ли уже такой пользователь (кроме текущего)
-        $check_query = "SELECT id FROM users WHERE username = '$username' AND id != $user_id";
-        $check_result = mysqli_query($conn, $check_query);
-        
+        $check_stmt = mysqli_prepare($conn, "SELECT id FROM users WHERE username = ? AND id != ?");
+        mysqli_stmt_bind_param($check_stmt, "si", $username, $user_id);
+        mysqli_stmt_execute($check_stmt);
+        $check_result = mysqli_stmt_get_result($check_stmt);
+
         if ($check_result && mysqli_num_rows($check_result) > 0) {
             $error = 'Пользователь с таким именем уже существует';
         } else {
-            $update_fields = "username = '$username'";
+            $fields = ['username = ?'];
+            $types = 's';
+            $values = [$username];
+
             if (in_array('first_name', $existing_columns, true)) {
-                $update_fields .= ", first_name = '$first_name'";
+                $fields[] = 'first_name = ?';
+                $types .= 's';
+                $values[] = $first_name;
             }
             if (in_array('last_name', $existing_columns, true)) {
-                $update_fields .= ", last_name = '$last_name'";
+                $fields[] = 'last_name = ?';
+                $types .= 's';
+                $values[] = $last_name;
             }
-            
-            // Добавляем поля только если они существуют
-            if (in_array('email', $existing_columns) && isset($_POST['email'])) {
-                $email = mysqli_real_escape_string($conn, $_POST['email']);
+
+            if (in_array('email', $existing_columns, true) && isset($_POST['email'])) {
+                $email = trim((string)$_POST['email']);
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $error = 'Некорректный email адрес';
                 } else {
-                    $update_fields .= ", email = '$email'";
+                    $fields[] = 'email = ?';
+                    $types .= 's';
+                    $values[] = $email;
                 }
             }
-            
-            if (in_array('role_id', $existing_columns)) {
-                $update_fields .= ", role_id = $role_id";
+
+            if (in_array('role_id', $existing_columns, true) && $role_id > 0) {
+                $fields[] = 'role_id = ?';
+                $types .= 'i';
+                $values[] = $role_id;
             }
-            
-            if (in_array('is_active', $existing_columns)) {
-                $update_fields .= ", is_active = $is_active";
+
+            if (in_array('is_active', $existing_columns, true)) {
+                $fields[] = 'is_active = ?';
+                $types .= 'i';
+                $values[] = $is_active;
             }
-            
-            if ($change_password) {
+
+            if ($change_password && $error === '') {
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $update_fields .= ", password = '$hashed_password'";
+                $fields[] = '`password` = ?';
+                $types .= 's';
+                $values[] = $hashed_password;
             }
-            
-            if (!isset($error)) {
-                $query = "UPDATE users SET $update_fields WHERE id = $user_id";
-                
-                if (mysqli_query($conn, $query)) {
-                    $message = 'Пользователь успешно обновлен!';
-                    // Обновляем данные пользователя
+
+            if ($error === '') {
+                $types .= 'i';
+                $values[] = $user_id;
+                $query = 'UPDATE users SET ' . implode(', ', $fields) . ' WHERE id = ?';
+                $stmt = mysqli_prepare($conn, $query);
+                if ($stmt && mysqli_stmt_bind_param($stmt, $types, ...$values) && mysqli_stmt_execute($stmt)) {
+                    $message = $change_password
+                        ? 'Пользователь обновлён, пароль изменён.'
+                        : 'Пользователь успешно обновлен!';
                     $user_data['username'] = $username;
                     $user_data['first_name'] = $first_name;
                     $user_data['last_name'] = $last_name;
-                    if (in_array('email', $existing_columns) && isset($_POST['email'])) {
+                    if (isset($email)) {
                         $user_data['email'] = $email;
                     }
-                    if (in_array('role_id', $existing_columns)) {
+                    if (in_array('role_id', $existing_columns, true) && $role_id > 0) {
                         $user_data['role_id'] = $role_id;
                     }
-                    if (in_array('is_active', $existing_columns)) {
+                    if (in_array('is_active', $existing_columns, true)) {
                         $user_data['is_active'] = $is_active;
                     }
+                    $password = '';
+                    $confirm_password = '';
+                    $change_password = false;
                 } else {
                     $error = 'Ошибка при обновлении пользователя: ' . mysqli_error($conn);
                 }
             }
+        }
+        if (isset($check_stmt)) {
+            mysqli_stmt_close($check_stmt);
         }
     }
 }
@@ -396,7 +413,7 @@ if (mysqli_num_rows($roles_table_exists) > 0) {
                 </h3>
             </div>
             <div class="card-body">
-                <form method="POST" action="">
+                <form method="POST" action="edit_user.php?id=<?= (int)$user_id ?>">
                     <?php if (in_array('first_name', $existing_columns, true) || in_array('last_name', $existing_columns, true)): ?>
                     <div class="row">
                         <?php if (in_array('first_name', $existing_columns, true)): ?>
@@ -494,34 +511,26 @@ if (mysqli_num_rows($roles_table_exists) > 0) {
                     </div>
                     <?php endif; ?>
 
-                    <!-- Секция смены пароля -->
                     <div class="password-section">
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" name="change_password" id="change_password">
-                            <label class="form-check-label" for="change_password">
-                                Изменить пароль
-                            </label>
+                        <div class="mb-3">
+                            <strong>Изменить пароль</strong>
+                            <div class="text-muted small">Оставьте пустым, если пароль менять не нужно</div>
                         </div>
-                        
-                        <div id="password-fields" style="display: none;">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label" for="password">
-                                            Новый пароль
-                                        </label>
-                                        <input class="form-control" type="password" id="password" name="password" 
-                                               placeholder="Минимум 6 символов">
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="password">Новый пароль</label>
+                                    <input class="form-control" type="password" id="password" name="password"
+                                           placeholder="Минимум 6 символов" autocomplete="new-password"
+                                           minlength="6">
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label" for="confirm_password">
-                                            Подтвердите пароль
-                                        </label>
-                                        <input class="form-control" type="password" id="confirm_password" name="confirm_password" 
-                                               placeholder="Повторите пароль">
-                                    </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label" for="confirm_password">Подтвердите пароль</label>
+                                    <input class="form-control" type="password" id="confirm_password" name="confirm_password"
+                                           placeholder="Повторите пароль" autocomplete="new-password"
+                                           minlength="6">
                                 </div>
                             </div>
                         </div>
@@ -543,36 +552,30 @@ if (mysqli_num_rows($roles_table_exists) > 0) {
     </div>
 
     <script>
-        // Показать/скрыть поля пароля
-        document.getElementById('change_password').addEventListener('change', function() {
-            const passwordFields = document.getElementById('password-fields');
-            const passwordInput = document.getElementById('password');
-            const confirmPasswordInput = document.getElementById('confirm_password');
-            
-            if (this.checked) {
-                passwordFields.style.display = 'block';
-                passwordInput.required = true;
-                confirmPasswordInput.required = true;
-            } else {
-                passwordFields.style.display = 'none';
-                passwordInput.required = false;
-                confirmPasswordInput.required = false;
-                passwordInput.value = '';
-                confirmPasswordInput.value = '';
-            }
-        });
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
 
-        // Проверка совпадения паролей
-        document.getElementById('confirm_password').addEventListener('input', function() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = this.value;
-            
-            if (confirmPassword && password !== confirmPassword) {
-                this.setCustomValidity('Пароли не совпадают');
+        function validatePasswords() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (password && password.length < 6) {
+                passwordInput.setCustomValidity('Пароль должен содержать минимум 6 символов');
             } else {
-                this.setCustomValidity('');
+                passwordInput.setCustomValidity('');
             }
-        });
+
+            if (confirmPassword && password !== confirmPassword) {
+                confirmPasswordInput.setCustomValidity('Пароли не совпадают');
+            } else if (password && !confirmPassword) {
+                confirmPasswordInput.setCustomValidity('Повторите пароль');
+            } else {
+                confirmPasswordInput.setCustomValidity('');
+            }
+        }
+
+        passwordInput.addEventListener('input', validatePasswords);
+        confirmPasswordInput.addEventListener('input', validatePasswords);
     </script>
 </body>
 
