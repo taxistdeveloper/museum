@@ -236,7 +236,7 @@ $result_veterans = mysqli_query($conn, $query_veterans);
         <section class="header">
             <div class="header__container">
                 <a class="logo" href="#">
-                    <img src="https://ff2.object.pscloud.io/giwycqkw/oeqsaqye/eoamgqcg/4384bf6eeeace361ca86ed2a4e97d2975c665532.png" alt="Логотип" />
+                    <img src="../assets/img/logo.png" alt="Логотип" />
                 </a>
                 <div class="right d-flex align-items-center">
                     <a class="back" href="historyName.php">← <?= $lang == 'kz' ? 'Артқа' : ($lang == 'en' ? 'Back' : 'Назад') ?></a>

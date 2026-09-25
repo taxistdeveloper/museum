@@ -14,7 +14,7 @@
             <div class="header__container">
                 <a class="logo" href="">
                     <img
-                        src="https://ktsk.edu.kz/wp-content/uploads/2024/10/logo.png"
+                        src="../assets/img/logo.png"
                         alt="" />
                 </a>
                 <div class="right">

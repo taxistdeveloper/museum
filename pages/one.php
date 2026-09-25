@@ -174,7 +174,7 @@ if ($language == 'kk') {
         <section class="header">
             <div class="header__container">
                 <a class="logo" href="/">
-                    <img src="https://ff2.object.pscloud.io/giwycqkw/oeqsaqye/eoamgqcg/4384bf6eeeace361ca86ed2a4e97d2975c665532.png" alt="KTSK Logo">
+                    <img src="../assets/img/logo.png" alt="KTSK Logo">
                 </a>
                 <div class="d-flex align-items-center flex-wrap gap-3">
                     <div class="language-switcher">

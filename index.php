@@ -139,7 +139,7 @@
         <header class="header">
             <div class="d-flex align-items-center gap-4">
                 <a class="logo" href="/">
-                    <img src="https://ff2.object.pscloud.io/giwycqkw/oeqsaqye/eoamgqcg/4384bf6eeeace361ca86ed2a4e97d2975c665532.png" alt="Logo">
+                    <img src="assets/img/logo.png" alt="Logo">
                 </a>
                 <div class="language-switcher">
                     <a href="?lang=kk">Қазақша</a>
