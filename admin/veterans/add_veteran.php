@@ -51,8 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить ветерана</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script>
         // Скрипт для скрытия сообщения через 1 секунду
         window.onload = function() {
             const messageElement = document.getElementById('message');
@@ -67,11 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
     <div class="container">
-        <h1 class="title mt-5">Добавить ветерана</h1>
+        <h1 class="h2 mt-5">Добавить ветерана</h1>
 
         <!-- Выводим сообщение, если оно существует -->
         <?php if (isset($_SESSION['message'])): ?>
-            <div id="message" class="notification is-<?php echo $_SESSION['message_type']; ?>">
+            <div id="message" class="alert alert-<?php echo $_SESSION['message_type']; ?>">
                 <?php echo $_SESSION['message']; ?>
             </div>
             <?php
@@ -81,34 +82,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php endif; ?>
 
         <form action="" method="POST" enctype="multipart/form-data">
-            <div class="field">
-                <label class="label">Имя</label>
-                <div class="control">
-                    <input class="input" type="text" name="name" required>
+            <div class="mb-3">
+                <label class="form-label">Имя</label>
+                <input class="form-control" type="text" name="name" required>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Биография</label>
-                <div class="control">
-                    <textarea class="textarea" name="biography" required></textarea>
+            <div class="mb-3">
+                <label class="form-label">Биография</label>
+                <textarea class="form-control" name="biography" required></textarea>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Фото</label>
-                <div class="control">
-                    <input class="input" type="file" name="photo" accept="image/*" required>
+            <div class="mb-3">
+                <label class="form-label">Фото</label>
+                <input class="form-control" type="file" name="photo" accept="image/*" required>
                 </div>
-            </div>
 
-            <div class="field">
-                <div class="control">
-                    <button class="button is-primary" type="submit">Добавить</button>
+            <div class="mb-3">
+                <button class="btn btn-primary" type="submit">Добавить</button>
                 </div>
-            </div>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

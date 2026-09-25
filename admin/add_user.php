@@ -12,26 +12,27 @@ include '../config.php';
 $message = '';
 $error = '';
 
+$existing_columns = [];
+$columns_result = mysqli_query($conn, "SHOW COLUMNS FROM users");
+if ($columns_result) {
+    while ($row = mysqli_fetch_assoc($columns_result)) {
+        $existing_columns[] = $row['Field'];
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
-    $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
-    $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
-    $role_id = (int)$_POST['role_id'];
+    $first_name = mysqli_real_escape_string($conn, $_POST['first_name'] ?? '');
+    $last_name = mysqli_real_escape_string($conn, $_POST['last_name'] ?? '');
+    $role_id = (int)($_POST['role_id'] ?? 0);
     $is_active = isset($_POST['is_active']) ? 1 : 0;
 
-    // Проверяем, какие поля существуют в таблице
-    $columns_result = mysqli_query($conn, "SHOW COLUMNS FROM users");
-    $existing_columns = [];
-    if ($columns_result) {
-        while ($row = mysqli_fetch_assoc($columns_result)) {
-            $existing_columns[] = $row['Field'];
-        }
-    }
+    $needs_name = in_array('first_name', $existing_columns, true) || in_array('last_name', $existing_columns, true);
 
     // Валидация
-    if (empty($username) || empty($password) || empty($first_name) || empty($last_name)) {
+    if (empty($username) || empty($password) || ($needs_name && (empty($first_name) || empty($last_name)))) {
         $error = 'Пожалуйста, заполните все обязательные поля';
     } elseif ($password !== $confirm_password) {
         $error = 'Пароли не совпадают';
@@ -60,9 +61,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Хешируем пароль
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 
-                // Формируем запрос вставки только с существующими полями
-                $fields = "username, password, first_name, last_name";
-                $values = "'$username', '$hashed_password', '$first_name', '$last_name'";
+                $fields = "username, password";
+                $values = "'$username', '$hashed_password'";
+                if (in_array('first_name', $existing_columns, true)) {
+                    $fields .= ", first_name";
+                    $values .= ", '$first_name'";
+                }
+                if (in_array('last_name', $existing_columns, true)) {
+                    $fields .= ", last_name";
+                    $values .= ", '$last_name'";
+                }
                 
                 if (in_array('email', $existing_columns) && isset($_POST['email'])) {
                     $fields .= ", email";
@@ -355,7 +363,9 @@ if (mysqli_num_rows($roles_table_exists) > 0) {
             </div>
             <div class="card-body">
                 <form method="POST" action="">
+                    <?php if (in_array('first_name', $existing_columns, true) || in_array('last_name', $existing_columns, true)): ?>
                     <div class="row">
+                        <?php if (in_array('first_name', $existing_columns, true)): ?>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label" for="first_name">
@@ -366,6 +376,8 @@ if (mysqli_num_rows($roles_table_exists) > 0) {
                                        placeholder="Введите имя" required>
                             </div>
                         </div>
+                        <?php endif; ?>
+                        <?php if (in_array('last_name', $existing_columns, true)): ?>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label" for="last_name">
@@ -376,7 +388,9 @@ if (mysqli_num_rows($roles_table_exists) > 0) {
                                        placeholder="Введите фамилию" required>
                             </div>
                         </div>
+                        <?php endif; ?>
                     </div>
+                    <?php endif; ?>
 
                     <div class="row">
                         <div class="col-md-6">

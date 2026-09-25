@@ -121,8 +121,9 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактировать ветерана</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script>
         window.onload = function() {
             const messageElement = document.getElementById('message');
             if (messageElement) {
@@ -136,56 +137,47 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
 <body>
     <div class="container">
-        <h1 class="title mt-5">Редактировать ветерана <?= htmlspecialchars($veteran['name_' . $lang] ?? '') ?></h1>
+        <h1 class="h2 mt-5">Редактировать ветерана <?= htmlspecialchars($veteran['name_' . $lang] ?? '') ?></h1>
 
         <!-- Сообщение об ошибке или успехе -->
         <?php if (isset($_SESSION['message'])): ?>
-            <div id="message" class="notification is-<?php echo $_SESSION['message_type']; ?>">
+            <div id="message" class="alert alert-<?php echo $_SESSION['message_type']; ?>">
                 <?php echo $_SESSION['message']; ?>
             </div>
             <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
         <?php endif; ?>
 
         <!-- Переключатель языка -->
-        <div class="tabs is-centered">
-            <ul>
-                <li class="<?= $lang == 'ru' ? 'is-active' : '' ?>"><a href="?id=<?= $veteran['id'] ?>&lang=ru">Русский</a></li>
-                <li class="<?= $lang == 'kz' ? 'is-active' : '' ?>"><a href="?id=<?= $veteran['id'] ?>&lang=kz">Қазақша</a></li>
-                <li class="<?= $lang == 'en' ? 'is-active' : '' ?>"><a href="?id=<?= $veteran['id'] ?>&lang=en">English</a></li>
+        <ul class="nav nav-tabs justify-content-center mb-3">
+                <li class="nav-item"><a class="nav-link <?= $lang == 'ru' ? 'active' : '' ?>" href="?id=<?= $veteran['id'] ?>&lang=ru">Русский</a></li>
+                <li class="nav-item"><a class="nav-link <?= $lang == 'kz' ? 'active' : '' ?>" href="?id=<?= $veteran['id'] ?>&lang=kz">Қазақша</a></li>
+                <li class="nav-item"><a class="nav-link <?= $lang == 'en' ? 'active' : '' ?>" href="?id=<?= $veteran['id'] ?>&lang=en">English</a></li>
             </ul>
-        </div>
 
         <form action="" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
 
-            <div class="field">
-                <label class="label">Имя</label>
-                <div class="control">
-                    <input class="input" type="text" name="name" value="<?= htmlspecialchars($veteran['name_' . $lang] ?? '') ?>" required>
+            <div class="mb-3">
+                <label class="form-label">Имя</label>
+                <input class="form-control" type="text" name="name" value="<?= htmlspecialchars($veteran['name_' . $lang] ?? '') ?>" required>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Биография</label>
-                <div class="control">
-                    <textarea class="textarea" name="biography" required><?= htmlspecialchars($veteran['biography_' . $lang] ?? '') ?></textarea>
+            <div class="mb-3">
+                <label class="form-label">Биография</label>
+                <textarea class="form-control" name="biography" required><?= htmlspecialchars($veteran['biography_' . $lang] ?? '') ?></textarea>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Фото (оставьте пустым, если не меняете)</label>
-                <div class="control">
-                    <input class="input" type="file" name="photo" accept="image/*">
+            <div class="mb-3">
+                <label class="form-label">Фото (оставьте пустым, если не меняете)</label>
+                <input class="form-control" type="file" name="photo" accept="image/*">
                 </div>
-            </div>
 
-            <div class="field">
-                <div class="control">
-                    <button class="button is-primary" type="submit">Сохранить изменения</button>
+            <div class="mb-3">
+                <button class="btn btn-primary" type="submit">Сохранить изменения</button>
                 </div>
-            </div>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

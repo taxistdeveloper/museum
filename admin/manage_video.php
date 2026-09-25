@@ -57,8 +57,9 @@ $videos = $conn->query("SELECT * FROM videos ORDER BY created_at DESC");
 <head>
     <meta charset="UTF-8">
     <title>Видеоархив</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <script src="https://kit.fontawesome.com/a2e0e9e6e0.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a2e0e9e6e0.js" crossorigin="anonymous"></script>
     <style>
         body[data-theme="dark"] {
             background: #121212;
@@ -84,41 +85,45 @@ $videos = $conn->query("SELECT * FROM videos ORDER BY created_at DESC");
 </head>
 
 <body>
-    <section class="section">
+    <section class="py-4">
         <div class="container">
-            <h1 class="title">📽 Управление видеоархивом</h1>
+            <h1 class="h2">📽 Управление видеоархивом</h1>
 
             <?php if (!empty($_SESSION['message'])): ?>
-                <div class="notification is-success"><?= $_SESSION['message'];
+                <div class="alert alert-success"><?= $_SESSION['message'];
                                                         unset($_SESSION['message']); ?></div>
             <?php endif; ?>
 
-            <div class="field is-grouped is-justify-content-space-between">
-                <div class="control">
-                    <button class="button is-small" onclick="toggleTheme()">🌙 Переключить тему</button>
-                </div>
+            <div class="d-flex gap-2 flex-wrap justify-content-between mb-3">
+                <a href="index.php" class="btn btn-light">Назад</a>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleTheme()">Переключить тему</button>
             </div>
 
-            <form method="POST" enctype="multipart/form-data" class="box mt-3">
-                <div class="field"><label class="label">Название</label>
-                    <div class="control"><input class="input" name="title" required></div>
+            <form method="POST" enctype="multipart/form-data" class="card card-body mt-3">
+                <div class="mb-3">
+                    <label class="form-label">Название</label>
+                    <input class="form-control" name="title" required>
                 </div>
-                <div class="field"><label class="label">Категория</label>
-                    <div class="control"><input class="input" name="category" placeholder="напр. События"></div>
+                <div class="mb-3">
+                    <label class="form-label">Категория</label>
+                    <input class="form-control" name="category" placeholder="напр. События">
                 </div>
-                <div class="field"><label class="label">Теги</label>
-                    <div class="control"><input class="input" name="tags" placeholder="через запятую"></div>
+                <div class="mb-3">
+                    <label class="form-label">Теги</label>
+                    <input class="form-control" name="tags" placeholder="через запятую">
                 </div>
-                <div class="field"><label class="label">YouTube-ссылка</label>
-                    <div class="control"><input class="input" name="url" placeholder="https://youtube.com/..."></div>
+                <div class="mb-3">
+                    <label class="form-label">YouTube-ссылка</label>
+                    <input class="form-control" name="url" placeholder="https://youtube.com/...">
                 </div>
-                <div class="field"><label class="label">Или загрузите видеофайл</label>
-                    <div class="control"><input type="file" name="video_file" accept="video/*"></div>
+                <div class="mb-3">
+                    <label class="form-label">Или загрузите видеофайл</label>
+                    <input class="form-control" type="file" name="video_file" accept="video/*">
                 </div>
-                <div class="control mt-3"><button name="add_video" class="button is-primary">Добавить</button></div>
+                <button name="add_video" class="btn btn-primary">Добавить</button>
             </form>
 
-            <table class="table is-fullwidth is-striped mt-4">
+            <table class="table table-striped table-hover mt-4">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -144,8 +149,8 @@ $videos = $conn->query("SELECT * FROM videos ORDER BY created_at DESC");
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="?delete=<?= $v['id'] ?>" class="button is-danger is-small" onclick="return confirm('Удалить видео?')">Удалить</a>
-                                <a href="edit_video.php?id=<?= $v['id'] ?>" class="button is-warning is-small">Редактировать</a>
+                                <a href="?delete=<?= $v['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Удалить видео?')">Удалить</a>
+                                <a href="edit_video.php?id=<?= $v['id'] ?>" class="btn btn-warning btn-sm">Редактировать</a>
 
                             </td>
                         </tr>
@@ -155,11 +160,16 @@ $videos = $conn->query("SELECT * FROM videos ORDER BY created_at DESC");
         </div>
     </section>
 
-    <!-- Modal -->
-    <div class="modal" id="videoModal">
-        <div class="modal-background" onclick="closeModal()"></div>
-        <div class="modal-content" id="modalContent"></div>
-        <button class="modal-close is-large" aria-label="close" onclick="closeModal()"></button>
+    <div class="modal fade" id="videoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Просмотр</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body" id="modalContent"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -171,23 +181,23 @@ $videos = $conn->query("SELECT * FROM videos ORDER BY created_at DESC");
         function openModal(type, src) {
             const content = document.getElementById('modalContent');
             if (type === 'youtube') {
-                content.innerHTML = `<iframe src="${getYoutubeEmbed(src)}" frameborder="0" allowfullscreen></iframe>`;
+                content.innerHTML = `<iframe src="${getYoutubeEmbed(src)}" style="width:100%;height:420px;border:0;" allowfullscreen></iframe>`;
             } else {
-                content.innerHTML = `<video src="${src}" controls autoplay></video>`;
+                content.innerHTML = `<video src="${src}" controls autoplay style="width:100%;"></video>`;
             }
-            document.getElementById('videoModal').classList.add('is-active');
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('videoModal')).show();
         }
 
-        function closeModal() {
-            document.getElementById('videoModal').classList.remove('is-active');
+        document.getElementById('videoModal').addEventListener('hidden.bs.modal', function () {
             document.getElementById('modalContent').innerHTML = '';
-        }
+        });
 
         function toggleTheme() {
             const root = document.documentElement;
             root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

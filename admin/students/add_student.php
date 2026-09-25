@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (mysqli_query($conn, $query_add_student)) {
         echo "<h2 class='has-text-centered'>Студент добавлен успешно!</h2>";
-        echo "<a href='../manage_students.php' class='button is-link'>Перейти к списку студентов</a>";
+        echo "<a href='../manage_students.php' class='btn btn-primary'>Перейти к списку студентов</a>";
     } else {
         echo "<h2 class='has-text-centered'>Ошибка добавления студента</h2>";
     }
@@ -50,13 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить студента</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script>
         // Функция для добавления новых полей достижений
         function addAchievementField() {
             var container = document.getElementById("achievementFields");
             var inputField = document.createElement("input");
-            inputField.classList.add("input");
+            inputField.classList.add("form-control");
             inputField.classList.add("mt-2");
             inputField.setAttribute("type", "text");
             inputField.setAttribute("name", "achievements[]");
@@ -67,53 +68,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
     <div class="container">
-        <h1 class="title has-text-centered mt-5">Добавить студента</h1>
+        <h1 class="h2 text-center mt-5">Добавить студента</h1>
 
-        <form action="add_student.php" method="POST" enctype="multipart/form-data" class="box">
-            <div class="field">
-                <label class="label">Имя студента</label>
-                <div class="control">
-                    <input class="input" type="text" name="name" required>
+        <form action="add_student.php" method="POST" enctype="multipart/form-data" class="card card-body">
+            <div class="mb-3">
+                <label class="form-label">Имя студента</label>
+                <input class="form-control" type="text" name="name" required>
                 </div>
+
+
+
+            <div class="mb-3">
+                <label class="form-label">Группа</label>
+                <input class="form-control" type="text" name="group" required>
+                </div>
+
+
+
+            <div class="mb-3">
+                <label class="form-label">Достижения</label>
+                <div id="achievementFields">
+                    <input class="form-control" type="text" name="achievements[]">
+                </div>
+                <button type="button" class="btn btn-info mt-2" onclick="addAchievementField()">Добавить достижение</button>
             </div>
 
-
-
-            <div class="field">
-                <label class="label">Группа</label>
-                <div class="control">
-                    <input class="input" type="text" name="group" required>
+            <div class="mb-3">
+                <label class="form-label">Фото студента</label>
+                <input class="form-control" type="file" name="image" accept="image/*" required>
                 </div>
-            </div>
 
-
-
-            <div class="field">
-                <label class="label">Достижения</label>
-                <div class="control" id="achievementFields">
-                    <input class="input" type="text" name="achievements[]">
+            <div class="mb-3">
+                <button class="btn btn-primary">Добавить</button>
                 </div>
-                <button type="button" class="button is-info mt-2" onclick="addAchievementField()">Добавить достижение</button>
-            </div>
-
-            <div class="field">
-                <label class="label">Фото студента</label>
-                <div class="control">
-                    <input class="input" type="file" name="image" accept="image/*" required>
-                </div>
-            </div>
-
-            <div class="field">
-                <div class="control">
-                    <button class="button is-primary">Добавить</button>
-                </div>
-            </div>
         </form>
 
         <a href="../manage_students.php">
-            <button class="button is-link">Назад</button>
+            <button class="btn btn-primary">Назад</button>
         </a>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

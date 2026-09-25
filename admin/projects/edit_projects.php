@@ -92,8 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <title>Редактировать проект</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
         img.gallery-thumb {
             width: 100px;
             margin: 5px;
@@ -119,52 +120,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
     <div class="container">
-        <h1 class="title mt-5">Редактировать проект</h1>
+        <h1 class="h2 mt-5">Редактировать проект</h1>
 
         <?php if (isset($_SESSION['message'])): ?>
-            <div id="message" class="notification is-<?= $_SESSION['message_type'] ?>">
+            <div id="message" class="alert alert-<?= $_SESSION['message_type'] ?>">
                 <?= $_SESSION['message'] ?>
             </div>
             <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
         <?php endif; ?>
 
-        <div class="tabs is-centered">
-            <ul>
-                <li class="<?= $lang == 'ru' ? 'is-active' : '' ?>"><a href="?id=<?= $project_id ?>&lang=ru">Русский</a></li>
-                <li class="<?= $lang == 'kz' ? 'is-active' : '' ?>"><a href="?id=<?= $project_id ?>&lang=kz">Қазақша</a></li>
-                <li class="<?= $lang == 'en' ? 'is-active' : '' ?>"><a href="?id=<?= $project_id ?>&lang=en">English</a></li>
+        <ul class="nav nav-tabs justify-content-center mb-3">
+                <li class="nav-item"><a class="nav-link <?= $lang == 'ru' ? 'active' : '' ?>" href="?id=<?= $project_id ?>&lang=ru">Русский</a></li>
+                <li class="nav-item"><a class="nav-link <?= $lang == 'kz' ? 'active' : '' ?>" href="?id=<?= $project_id ?>&lang=kz">Қазақша</a></li>
+                <li class="nav-item"><a class="nav-link <?= $lang == 'en' ? 'active' : '' ?>" href="?id=<?= $project_id ?>&lang=en">English</a></li>
             </ul>
-        </div>
 
         <form action="" method="POST" enctype="multipart/form-data">
-            <div class="field">
-                <label class="label">Название</label>
-                <div class="control">
-                    <input class="input" type="text" name="name" value="<?= htmlspecialchars($project_lang['name'] ?? '') ?>" required>
+            <div class="mb-3">
+                <label class="form-label">Название</label>
+                <input class="form-control" type="text" name="name" value="<?= htmlspecialchars($project_lang['name'] ?? '') ?>" required>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Описание (поддерживает таблицы)</label>
-                <div class="control">
-                    <textarea name="description" id="description"><?= $project_lang['description'] ?? '' ?></textarea>
+            <div class="mb-3">
+                <label class="form-label">Описание (поддерживает таблицы)</label>
+                <textarea name="description" id="description"><?= $project_lang['description'] ?? '' ?></textarea>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Главное фото</label>
-                <div class="control">
-                    <input class="input" type="file" name="photo" accept="image/*">
+            <div class="mb-3">
+                <label class="form-label">Главное фото</label>
+                <input class="form-control" type="file" name="photo" accept="image/*">
                     <?php if (!empty($project['photo'])): ?>
                         <p>Текущее фото: <br><img src="assets/images/<?= htmlspecialchars($project['photo']) ?>" width="120"></p>
                     <?php endif; ?>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Галерея (несколько фото)</label>
-                <div class="control">
-                    <input class="input" type="file" name="gallery[]" accept="image/*" multiple>
+            <div class="mb-3">
+                <label class="form-label">Галерея (несколько фото)</label>
+                <input class="form-control" type="file" name="gallery[]" accept="image/*" multiple>
                     <?php if (!empty($project['gallery'])): ?>
                         <p>Текущая галерея:</p>
                         <?php foreach (explode(',', $project['gallery']) as $img): ?>
@@ -174,13 +166,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
             </div>
 
-            <div class="field mt-4">
-                <div class="control">
-                    <button class="button is-primary" type="submit">Сохранить изменения</button>
+            <div class="mb-3 mt-4">
+                <button class="btn btn-primary" type="submit">Сохранить изменения</button>
                 </div>
-            </div>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

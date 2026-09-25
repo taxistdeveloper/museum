@@ -28,20 +28,21 @@ $result = mysqli_query($conn, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Управление специальностями</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
-        <h1 class="title has-text-centered mt-5">Управление специальностями</h1>
+        <h1 class="h2 text-center mt-5">Управление специальностями</h1>
         <!-- Кнопки навигации -->
         <div class="mb-4">
-            <a href="../admin/specality/add_speciality.php" class="button is-success mb-5">Добавить специальность</a>
-            <a href="../admin/index.php" class="button is-light">Назад</a>
+            <a href="../admin/specality/add_speciality.php" class="btn btn-success mb-5">Добавить специальность</a>
+            <a href="../admin/index.php" class="btn btn-light">Назад</a>
         </div>
 
 
-        <table class="table is-fullwidth is-striped">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -57,15 +58,16 @@ $result = mysqli_query($conn, $query);
                         <td><?= htmlspecialchars($specialty['name']) ?></td>
                         <td><?= htmlspecialchars($specialty['description']) ?></td>
                         <td>
-                            <a href="specality/edit_specialty.php?id=<?= $specialty['id'] ?>" class="button is-small is-warning">Редактировать</a>
+                            <a href="specality/edit_specialty.php?id=<?= $specialty['id'] ?>" class="btn btn-sm btn-warning">Редактировать</a>
                             <!-- Кнопка для удаления -->
-                            <a href="?delete_id=<?= $specialty['id'] ?>" class="button is-small is-danger" onclick="return confirm('Вы уверены, что хотите удалить эту специальность?')">Удалить</a>
+                            <a href="?delete_id=<?= $specialty['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены, что хотите удалить эту специальность?')">Удалить</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

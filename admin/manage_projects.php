@@ -26,8 +26,9 @@ $result = mysqli_query($conn, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Управление проектами</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script>
         // Скрипт для скрытия сообщения через 3 секунды
         window.onload = function() {
             const messageElement = document.getElementById('message');
@@ -42,17 +43,17 @@ $result = mysqli_query($conn, $query);
 
 <body>
     <div class="container">
-        <h1 class="title has-text-centered mt-5">Управление проектами</h1>
+        <h1 class="h2 text-center mt-5">Управление проектами</h1>
 
         <!-- Кнопки навигации -->
         <div class="mb-4">
-            <a href="projects/add_project.php" class="button is-primary">Добавить проект</a>
-            <a href="../admin/index.php" class="button is-light">Назад</a>
+            <a href="projects/add_project.php" class="btn btn-primary">Добавить проект</a>
+            <a href="../admin/index.php" class="btn btn-light">Назад</a>
         </div>
 
         <!-- Сообщение -->
         <?php if (isset($_SESSION['message'])): ?>
-            <div id="message" class="notification is-<?php echo $_SESSION['message_type']; ?>">
+            <div id="message" class="alert alert-<?php echo $_SESSION['message_type']; ?>">
                 <?php echo $_SESSION['message']; ?>
             </div>
             <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
@@ -60,11 +61,11 @@ $result = mysqli_query($conn, $query);
 
         <!-- Таблица проектов -->
         <?php if (mysqli_num_rows($result) == 0): ?>
-            <div class="notification is-warning">
+            <div class="alert alert-warning">
                 Проекты не найдены.
             </div>
         <?php else: ?>
-            <table class="table is-fullwidth">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Название</th>
@@ -80,8 +81,8 @@ $result = mysqli_query($conn, $query);
                             <td><?php echo nl2br(htmlspecialchars($row['description'])); ?></td>
                             <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                             <td>
-                                <a href="projects/edit_projects.php?id=<?php echo $row['id']; ?>" class="button is-small is-info">Редактировать</a>
-                                <a href="projects/delete_projects.php?id=<?php echo $row['id']; ?>" class="button is-small is-danger" onclick="return confirm('Вы уверены, что хотите удалить этот проект?');">Удалить</a>
+                                <a href="projects/edit_projects.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-info">Редактировать</a>
+                                <a href="projects/delete_projects.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этот проект?');">Удалить</a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -89,6 +90,7 @@ $result = mysqli_query($conn, $query);
             </table>
         <?php endif; ?>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

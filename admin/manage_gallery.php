@@ -22,8 +22,9 @@ $result_gallery = mysqli_query($conn, $query_gallery);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Управление галереей</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
         body {
             background-color: #f5f5f5;
         }
@@ -56,27 +57,27 @@ $result_gallery = mysqli_query($conn, $query_gallery);
 
 <body>
     <div class="container gallery-container">
-        <h1 class="title has-text-centered">Управление галереей</h1>
+        <h1 class="h2 text-center">Управление галереей</h1>
         <!-- Кнопки навигации -->
         <div class="mb-4">
-            <a href="./gallery/add_gallery.php" class="button is-link mb-5">Добавить изображение</a>
-            <a href="../admin/index.php" class="button is-light">Назад</a>
+            <a href="./gallery/add_gallery.php" class="btn btn-primary mb-5">Добавить изображение</a>
+            <a href="../admin/index.php" class="btn btn-light">Назад</a>
         </div>
 
 
-        <div class="columns is-multiline">
+        <div class="row g-3">
             <?php while ($row = mysqli_fetch_assoc($result_gallery)) { ?>
-                <div class="column is-one-quarter gallery-item">
+                <div class="col-md-3 gallery-item">
                     <div class="card">
                         <div class="card-image">
                             <img src="../admin/gallery/uploads/<?= htmlspecialchars($row['file_name']) ?>" alt="Фото" class="gallery-image">
                         </div>
-                        <div class="card-content">
-                            <p class="subtitle has-text-centered"><?= htmlspecialchars($row['description']) ?></p>
-                            <div class="buttons is-centered mt-3">
-                                <a href="../admin/gallery/edit_gallery.php?id=<?= $row['id'] ?>" class="button is-info">Редактировать</a>
+                        <div class="card-body">
+                            <p class="text-muted text-center"><?= htmlspecialchars($row['description']) ?></p>
+                            <div class="d-flex justify-content-center gap-2 flex-wrap mt-3">
+                                <a href="../admin/gallery/edit_gallery.php?id=<?= $row['id'] ?>" class="btn btn-info">Редактировать</a>
                                 <a href="../admin/gallery/delete_gallery.php?id=<?= $row['id'] ?>"
-                                    class="button is-danger"
+                                    class="btn btn-danger"
                                     onclick="return confirm('Вы уверены, что хотите удалить изображение?')">Удалить</a>
                             </div>
                         </div>
@@ -85,6 +86,7 @@ $result_gallery = mysqli_query($conn, $query_gallery);
             <?php } ?>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

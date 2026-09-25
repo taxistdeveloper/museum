@@ -20,8 +20,9 @@ $result_teachers = mysqli_query($conn, $query_teachers);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Преподаватели</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
         .teacher-photo {
             width: 50px;
             height: 50px;
@@ -34,17 +35,17 @@ $result_teachers = mysqli_query($conn, $query_teachers);
 
 <body>
     <div class="container">
-        <h1 class="title has-text-centered mt-5">Список преподавателей</h1>
+        <h1 class="h2 text-center mt-5">Список преподавателей</h1>
         <!-- Кнопки навигации -->
         <div class="mb-4">
             <a href="teachers/add_teacher.php">
-                <button class="button is-primary">Добавить преподавателя</button>
+                <button class="btn btn-primary">Добавить преподавателя</button>
             </a>
-            <a href="../admin/index.php" class="button is-light">Назад</a>
+            <a href="../admin/index.php" class="btn btn-light">Назад</a>
         </div>
 
         <!-- Таблица преподавателей -->
-        <table class="table is-striped is-hoverable is-fullwidth mt-5">
+        <table class="table table-striped table-hover mt-5">
             <thead>
                 <tr>
                     <th>Фото</th>
@@ -63,14 +64,15 @@ $result_teachers = mysqli_query($conn, $query_teachers);
                         <td><?= htmlspecialchars($teacher['name']) ?></td>
                         <td><?= nl2br(htmlspecialchars($teacher['description'])) ?></td>
                         <td>
-                            <a href="teachers/edit_teacher.php?id=<?= $teacher['id'] ?>" class="button is-warning">Редактировать</a>
-                            <a href="teachers/delete_teacher.php?id=<?= $teacher['id'] ?>" class="button is-danger" onclick="return confirm('Вы уверены, что хотите удалить этого преподавателя?')">Удалить</a>
+                            <a href="teachers/edit_teacher.php?id=<?= $teacher['id'] ?>" class="btn btn-warning">Редактировать</a>
+                            <a href="teachers/delete_teacher.php?id=<?= $teacher['id'] ?>" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этого преподавателя?')">Удалить</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -16,6 +16,10 @@ $success = false;
 // SQL команды для обновления таблиц
 $update_commands = [
     // Добавляем новые поля, если их нет
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS first_name VARCHAR(50) NULL COMMENT 'Имя'",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS last_name VARCHAR(50) NULL COMMENT 'Фамилия'",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(100) NULL COMMENT 'Email пользователя'",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE COMMENT 'Активен ли пользователь'",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS last_login TIMESTAMP NULL COMMENT 'Последний вход'",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
     "ALTER TABLE roles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",

@@ -92,14 +92,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Редактировать преподавателя</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script>
         function addEducationField() {
             var container = document.getElementById("educationFields");
             var input = document.createElement("input");
             input.type = "text";
             input.name = "education[]";
-            input.classList.add("input", "mt-2");
+            input.classList.add("form-control", "mt-2");
             container.appendChild(input);
         }
     </script>
@@ -107,81 +108,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
     <div class="container">
-        <h1 class="title has-text-centered mt-5">Редактировать преподавателя</h1>
+        <h1 class="h2 text-center mt-5">Редактировать преподавателя</h1>
 
         <?php if (isset($_SESSION['message'])): ?>
-            <div class="notification is-<?= $_SESSION['message_type']; ?>">
+            <div class="alert alert-<?= $_SESSION['message_type']; ?>">
                 <?= $_SESSION['message']; ?>
             </div>
             <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
         <?php endif; ?>
 
-        <div class="tabs is-centered">
-            <ul>
-                <li class="<?= $lang == 'ru' ? 'is-active' : '' ?>"><a href="?id=<?= $teacher_id ?>&lang=ru">Русский</a></li>
-                <li class="<?= $lang == 'kz' ? 'is-active' : '' ?>"><a href="?id=<?= $teacher_id ?>&lang=kz">Қазақша</a></li>
-                <li class="<?= $lang == 'en' ? 'is-active' : '' ?>"><a href="?id=<?= $teacher_id ?>&lang=en">English</a></li>
+        <ul class="nav nav-tabs justify-content-center mb-3">
+                <li class="nav-item"><a class="nav-link <?= $lang == 'ru' ? 'active' : '' ?>" href="?id=<?= $teacher_id ?>&lang=ru">Русский</a></li>
+                <li class="nav-item"><a class="nav-link <?= $lang == 'kz' ? 'active' : '' ?>" href="?id=<?= $teacher_id ?>&lang=kz">Қазақша</a></li>
+                <li class="nav-item"><a class="nav-link <?= $lang == 'en' ? 'active' : '' ?>" href="?id=<?= $teacher_id ?>&lang=en">English</a></li>
             </ul>
-        </div>
 
-        <form method="POST" enctype="multipart/form-data" class="box">
-            <div class="field">
-                <label class="label">Имя преподавателя</label>
-                <div class="control">
-                    <input class="input" type="text" name="name" value="<?= htmlspecialchars($teacher_lang['name'] ?? '') ?>" required>
+        <form method="POST" enctype="multipart/form-data" class="card card-body">
+            <div class="mb-3">
+                <label class="form-label">Имя преподавателя</label>
+                <input class="form-control" type="text" name="name" value="<?= htmlspecialchars($teacher_lang['name'] ?? '') ?>" required>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Описание</label>
-                <div class="control">
-                    <textarea class="textarea" name="description" required><?= htmlspecialchars($teacher_lang['description'] ?? '') ?></textarea>
+            <div class="mb-3">
+                <label class="form-label">Описание</label>
+                <textarea class="form-control" name="description" required><?= htmlspecialchars($teacher_lang['description'] ?? '') ?></textarea>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Образование</label>
-                <div id="educationFields" class="control">
+            <div class="mb-3">
+                <label class="form-label">Образование</label>
+                <div id="educationFields">
                     <?php
                     $educations = json_decode($teacher['education'], true) ?? [];
                     foreach ($educations as $education): ?>
-                        <input class="input mt-2" type="text" name="education[]" value="<?= htmlspecialchars($education) ?>" required>
+                        <input class="form-control mt-2" type="text" name="education[]" value="<?= htmlspecialchars($education) ?>" required>
                     <?php endforeach; ?>
                 </div>
-                <button type="button" class="button is-info mt-2" onclick="addEducationField()">Добавить образование</button>
+                <button type="button" class="btn btn-info mt-2" onclick="addEducationField()">Добавить образование</button>
             </div>
 
-            <div class="field">
-                <label class="label">Работает в колледже</label>
-                <div class="control">
-                    <input class="input" type="text" name="works_in_college" value="<?= htmlspecialchars($teacher['works_in_college']) ?>" required>
+            <div class="mb-3">
+                <label class="form-label">Работает в колледже</label>
+                <input class="form-control" type="text" name="works_in_college" value="<?= htmlspecialchars($teacher['works_in_college']) ?>" required>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Должность</label>
-                <div class="control">
-                    <input class="input" type="text" name="position" value="<?= htmlspecialchars($teacher['position']) ?>" required>
+            <div class="mb-3">
+                <label class="form-label">Должность</label>
+                <input class="form-control" type="text" name="position" value="<?= htmlspecialchars($teacher['position']) ?>" required>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Фото преподавателя</label>
-                <div class="control">
-                    <input class="input" type="file" name="image" accept="image/*">
+            <div class="mb-3">
+                <label class="form-label">Фото преподавателя</label>
+                <input class="form-control" type="file" name="image" accept="image/*">
                 </div>
                 <?php if (!empty($teacher['image'])): ?>
                     <img src="uploads/<?= htmlspecialchars($teacher['image']) ?>" alt="Фото" class="mt-2" width="150">
                 <?php endif; ?>
-            </div>
 
-            <div class="field">
-                <div class="control">
-                    <button class="button is-primary">Сохранить изменения</button>
+            <div class="mb-3">
+                <button class="btn btn-primary">Сохранить изменения</button>
                 </div>
-            </div>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

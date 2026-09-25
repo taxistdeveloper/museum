@@ -15,7 +15,7 @@ $teacher_id = $_GET['id'];
 $query_delete_teacher = "DELETE FROM teachers WHERE id = '$teacher_id'";
 if (mysqli_query($conn, $query_delete_teacher)) {
     echo "<h2 class='has-text-centered'>Преподаватель удален успешно!</h2>";
-    echo "<a href='../manage_teachers.php' class='button is-link'>Перейти к списку преподавателей</a>";
+    echo "<a href='../manage_teachers.php' class='btn btn-primary'>Перейти к списку преподавателей</a>";
 } else {
     echo "<h2 class='has-text-centered'>Ошибка удаления преподавателя</h2>";
 }

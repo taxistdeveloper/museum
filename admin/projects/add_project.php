@@ -86,8 +86,9 @@ ob_end_flush(); // Завершаем буферизацию вывода
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить проект</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script>
         // Скрипт для скрытия сообщения через 1 секунду
         window.onload = function() {
             const messageElement = document.getElementById('message');
@@ -102,11 +103,11 @@ ob_end_flush(); // Завершаем буферизацию вывода
 
 <body>
     <div class="container">
-        <h1 class="title mt-5">Добавить проект</h1>
+        <h1 class="h2 mt-5">Добавить проект</h1>
 
         <!-- Выводим сообщение, если оно существует -->
         <?php if (isset($_SESSION['message'])): ?>
-            <div id="message" class="notification is-<?php echo $_SESSION['message_type']; ?>">
+            <div id="message" class="alert alert-<?php echo $_SESSION['message_type']; ?>">
                 <?php echo $_SESSION['message']; ?>
             </div>
             <?php
@@ -116,41 +117,32 @@ ob_end_flush(); // Завершаем буферизацию вывода
         <?php endif; ?>
 
         <form action="" method="POST" enctype="multipart/form-data">
-            <div class="field">
-                <label class="label">Название проекта</label>
-                <div class="control">
-                    <input class="input" type="text" name="name" required>
+            <div class="mb-3">
+                <label class="form-label">Название проекта</label>
+                <input class="form-control" type="text" name="name" required>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Описание</label>
-                <div class="control">
-                    <textarea class="textarea" name="description" required></textarea>
+            <div class="mb-3">
+                <label class="form-label">Описание</label>
+                <textarea class="form-control" name="description" required></textarea>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Основное изображение</label>
-                <div class="control">
-                    <input class="input" type="file" name="main_image" accept="image/*" required>
+            <div class="mb-3">
+                <label class="form-label">Основное изображение</label>
+                <input class="form-control" type="file" name="main_image" accept="image/*" required>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Галерея (несколько изображений)</label>
-                <div class="control">
-                    <input class="input" type="file" name="gallery[]" accept="image/*" multiple>
+            <div class="mb-3">
+                <label class="form-label">Галерея (несколько изображений)</label>
+                <input class="form-control" type="file" name="gallery[]" accept="image/*" multiple>
                 </div>
-            </div>
 
-            <div class="field">
-                <div class="control">
-                    <button class="button is-primary" type="submit">Добавить</button>
+            <div class="mb-3">
+                <button class="btn btn-primary" type="submit">Добавить</button>
                 </div>
-            </div>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

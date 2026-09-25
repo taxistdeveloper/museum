@@ -72,43 +72,41 @@ function createCollage($imagePaths, $outputPath)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить изображения</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container mt-5">
-        <h1 class="title has-text-centered">Добавить изображения</h1>
+        <h1 class="h2 text-center">Добавить изображения</h1>
 
         <?php if (isset($successMsg)) { ?>
-            <div class="notification is-success">
+            <div class="alert alert-success">
                 <?= $successMsg ?>
             </div>
         <?php } ?>
         <?php if (isset($errorMsg)) { ?>
-            <div class="notification is-danger">
+            <div class="alert alert-danger">
                 <?= $errorMsg ?>
             </div>
         <?php } ?>
 
         <form action="" method="POST" enctype="multipart/form-data">
-            <div class="field">
-                <label class="label">Описание</label>
-                <div class="control">
-                    <textarea class="textarea" name="description" placeholder="Введите описание"></textarea>
+            <div class="mb-3">
+                <label class="form-label">Описание</label>
+                <textarea class="form-control" name="description" placeholder="Введите описание"></textarea>
+                </div>
+            <div class="mb-3">
+                <label class="form-label">Выберите изображения</label>
+                <input class="form-control" type="file" name="images[]" multiple required>
                 </div>
             </div>
-            <div class="field">
-                <label class="label">Выберите изображения</label>
-                <div class="control">
-                    <input class="input" type="file" name="images[]" multiple required>
-                </div>
-            </div>
-            <div class="field is-grouped is-justify-content-center mt-4">
-                <button type="submit" class="button is-link">Добавить</button>
-                <a href="../manage_gallery.php" class="button is-light">Назад</a>
-            </div>
+            <div class="d-flex gap-2 flex-wrap is-justify-content-center mt-4">
+                <button type="submit" class="btn btn-primary">Добавить</button>
+                <a href="../manage_gallery.php" class="btn btn-light">Назад</a>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

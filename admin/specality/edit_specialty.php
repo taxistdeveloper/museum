@@ -161,11 +161,11 @@ while ($row = mysqli_fetch_assoc($icon_result)) {
                 <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
             <?php endif; ?>
 
-            <div class="tabs mb-3">
-                <a href="?id=<?= $id ?>&lang=ru" class="<?= $lang == 'ru' ? 'active' : '' ?>">Русский</a>
-                <a href="?id=<?= $id ?>&lang=kz" class="<?= $lang == 'kz' ? 'active' : '' ?>">Қазақша</a>
-                <a href="?id=<?= $id ?>&lang=en" class="<?= $lang == 'en' ? 'active' : '' ?>">English</a>
-            </div>
+            <ul class="nav nav-tabs justify-content-center mb-3">
+                <li class="nav-item"><a class="nav-link <?= $lang == 'ru' ? 'active' : '' ?>" href="?id=<?= $id ?>&lang=ru">Русский</a></li>
+                <li class="nav-item"><a class="nav-link <?= $lang == 'kz' ? 'active' : '' ?>" href="?id=<?= $id ?>&lang=kz">Қазақша</a></li>
+                <li class="nav-item"><a class="nav-link <?= $lang == 'en' ? 'active' : '' ?>" href="?id=<?= $id ?>&lang=en">English</a></li>
+            </ul>
 
             <form method="POST">
                 <div class="mb-3">

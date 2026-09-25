@@ -1,0 +1,780 @@
+:root {
+    --bg-color: #f3f5f7;
+    --card-bg: #ffffff;
+    --text-color: #1a2430;
+    --muted: #5a6570;
+    --primary: #203850;
+    --primary-hover: #162838;
+    --btn-bg: #203850;
+    --btn-hover: #162838;
+    --btn-text: #ffffff;
+    --danger: #b42318;
+    --border: #d4dae0;
+    --radius: 12px;
+    --shadow: 0 4px 16px rgba(32, 56, 80, 0.08);
+    --wrap: 1100px;
+}
+
+html.dark {
+    --bg-color: #10161c;
+    --card-bg: #1a2430;
+    --text-color: #e6edf2;
+    --muted: #9aa8b4;
+    --primary: #9ec0d4;
+    --primary-hover: #b5d0df;
+    --btn-bg: #203850;
+    --btn-hover: #2d5270;
+    --btn-text: #ffffff;
+    --danger: #f07178;
+    --border: #2c3a48;
+    --shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: "Montserrat", sans-serif;
+    line-height: 1.6;
+    transition: background 0.25s ease, color 0.25s ease;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    color: var(--primary);
+}
+
+a:focus-visible,
+button:focus-visible,
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+.museum-wrap {
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: 1rem 1.25rem 2.5rem;
+}
+
+.museum-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 0 1.25rem;
+}
+
+.museum-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.museum-logo {
+    display: block;
+}
+
+.museum-logo img {
+    display: block;
+    max-height: 80px;
+    width: auto;
+}
+
+.museum-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.language-switcher {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.language-switcher a {
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text-color);
+    background: var(--card-bg);
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: 0.2s ease;
+}
+
+.language-switcher a:hover,
+.language-switcher a.active {
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border-color: var(--btn-bg);
+}
+
+.museum-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-decoration: none;
+    font-weight: 500;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    transition: background 0.2s ease;
+}
+
+.museum-back:hover {
+    background: var(--btn-hover);
+    color: var(--btn-text);
+}
+
+.theme-toggle {
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: var(--text-color);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.theme-toggle:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.museum-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0.5rem 0 1.75rem;
+}
+
+.museum-lead {
+    text-align: center;
+    color: var(--muted);
+    max-width: 640px;
+    margin: -1rem auto 2rem;
+}
+
+.museum-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.museum-card {
+    background: var(--card-bg);
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid transparent;
+    padding: 1.75rem 1.4rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+a.museum-card:hover,
+.museum-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary);
+}
+
+.museum-card--center {
+    text-align: center;
+}
+
+.museum-card i.card-icon,
+.museum-card .card-icon {
+    font-size: 2.4rem;
+    color: var(--primary);
+    margin-bottom: 0.7rem;
+    display: block;
+}
+
+.museum-card .icon-circle {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.7rem;
+}
+
+.museum-card .title,
+.museum-card h3 {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.museum-btn,
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: background 0.2s ease;
+}
+
+.museum-btn:hover,
+.button:hover {
+    background: var(--btn-hover);
+    color: var(--btn-text);
+}
+
+.museum-btn--ghost {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.museum-btn--ghost:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+.museum-btn--danger,
+.button.is-danger {
+    background: var(--danger);
+}
+
+.museum-btn--info,
+.button.is-info {
+    background: #2d5270;
+}
+
+.prose-card,
+.oneBlock,
+.twoBlock,
+.project-box,
+.profile-card,
+.person-card,
+.media-card,
+.student-card,
+.veteran-card,
+.card-style {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+}
+
+.person-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.person-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 0 0 1.25rem;
+}
+
+.person-card img,
+.person-card .image img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+}
+
+.person-card h3,
+.person-card .name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 1rem 1rem 0.75rem;
+}
+
+.profile-card {
+    margin-bottom: 1.25rem;
+}
+
+.profile-card__row {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+}
+
+.profile-card img,
+.student-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.profile-card ul {
+    padding-left: 1.1rem;
+}
+
+.student-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+}
+
+.student-card {
+    min-height: 100%;
+}
+
+.student-card__row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.museum-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.museum-modal.active,
+.museum-modal.is-active {
+    display: flex;
+}
+
+.museum-modal__card {
+    background: var(--card-bg);
+    color: var(--text-color);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 640px;
+    max-height: 85vh;
+    overflow: auto;
+}
+
+.museum-modal__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.museum-modal__close {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.achievement-item {
+    background: var(--bg-color);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    background: var(--border);
+}
+
+.timeLine-item {
+    position: relative;
+    margin-left: 54px;
+    background: var(--card-bg);
+    padding: 1.4rem 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.timeLine-item .check {
+    position: absolute;
+    left: -54px;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeLine-item .date {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-footer {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.notification {
+    padding: 1rem;
+    border-radius: var(--radius);
+    background: #d4edda;
+    color: #155724;
+    margin-bottom: 1.25rem;
+}
+
+html.dark .notification {
+    background: #1e3a2f;
+    color: #b7ebc6;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.gallery-tile {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0;
+    border: none;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    width: 100%;
+}
+
+.gallery-tile img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.gallery-tile p {
+    margin: 0;
+    padding: 0.75rem 1rem 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.gallery-tile p:empty {
+    display: none;
+}
+
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.media-card {
+    position: relative;
+    padding-top: 1.75rem;
+}
+
+.media-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary);
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.media-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.media-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-item {
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.stat-item h3 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1.8rem;
+}
+
+.stat-item p {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.video-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+}
+
+.video-thumb {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    background: var(--border);
+    display: block;
+}
+
+.video-info {
+    padding: 1rem;
+}
+
+.video-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.video-tags .tag {
+    background: var(--primary);
+    color: #fff;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+}
+
+.filters input,
+.filters select {
+    padding: 0.65rem 0.9rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 1rem;
+    min-width: 220px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+}
+
+.developer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 1.5rem auto 2rem;
+}
+
+.developer a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.developer a:hover {
+    text-decoration: underline;
+}
+
+.twoBlockGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.twoBlockGrid img {
+    max-width: 280px;
+    border-radius: var(--radius);
+    object-fit: cover;
+}
+
+.twoBlockGrid .text {
+    flex: 1;
+    min-width: 220px;
+}
+
+.specialty-card h5 {
+    color: var(--primary);
+    margin: 0 0 0.6rem;
+}
+
+.lightbox-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.lightbox-content {
+    display: block;
+    margin: 5% auto auto;
+    max-width: 90%;
+    max-height: 80%;
+    border-radius: 8px;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.lightbox-close { top: 20px; right: 30px; }
+.lightbox-prev { top: 50%; left: 30px; transform: translateY(-50%); }
+.lightbox-next { top: 50%; right: 30px; transform: translateY(-50%); }
+
+.label-new {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff3860;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    z-index: 2;
+}
+
+@media (max-width: 700px) {
+    .museum-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-card__row,
+    .student-card__row,
+    .twoBlockGrid {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .museum-title {
+        font-size: 1.35rem;
+    }
+
+    .timeline::before {
+        display: none;
+    }
+
+    .timeLine-item {
+        margin-left: 0;
+    }
+
+    .timeLine-item .check {
+        position: static;
+        margin-bottom: 0.6rem;
+    }
+}

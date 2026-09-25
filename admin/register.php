@@ -30,30 +30,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
-        <h1 class="title">Регистрация нового пользователя</h1>
+        <h1 class="h2">Регистрация нового пользователя</h1>
         <form action="register.php" method="POST">
-            <div class="field">
-                <label class="label">Имя пользователя</label>
-                <div class="control">
-                    <input class="input" type="text" name="username" required>
+            <div class="mb-3">
+                <label class="form-label">Имя пользователя</label>
+                <input class="form-control" type="text" name="username" required>
                 </div>
-            </div>
-            <div class="field">
-                <label class="label">Пароль</label>
-                <div class="control">
-                    <input class="input" type="password" name="password" required>
+            <div class="mb-3">
+                <label class="form-label">Пароль</label>
+                <input class="form-control" type="password" name="password" required>
                 </div>
-            </div>
-            <div class="control">
-                <button class="button is-primary" type="submit">Зарегистрировать</button>
-            </div>
+            <button class="btn btn-primary" type="submit">Зарегистрировать</button>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

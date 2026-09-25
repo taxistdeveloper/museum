@@ -1,146 +1,67 @@
 <?php
-include '../config.php';
+require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../includes/init.php';
 
-// Запрос к базе данных
-$query_gallery = "SELECT * FROM gallery ORDER BY created_at DESC";
-$result_gallery = mysqli_query($conn, $query_gallery);
-
+$result_gallery = mysqli_query($conn, "SELECT * FROM gallery ORDER BY created_at DESC");
 if (!$result_gallery) {
     die("Ошибка в запросе: " . mysqli_error($conn));
 }
+$museum_page_title = $lang['photo'];
+$museum_back_href = 'gallery_video.php?lang=' . urlencode($language);
 ?>
-
 <!DOCTYPE html>
-<html lang="ru">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Фото архив</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
-    <style>
-        body {
-            background-color: #f5f5f5;
-        }
-
-        .gallery-container {
-            margin-top: 30px;
-        }
-
-        .gallery-item {
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover {
-            transform: scale(1.05);
-        }
-
-        .card {
-            border-radius: 12px;
-            overflow: hidden;
-            transition: box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-image img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .description {
-            max-height: 50px;
-            overflow: hidden;
-            position: relative;
-            transition: max-height 0.3s ease;
-        }
-
-        .description.expanded {
-            max-height: none;
-        }
-
-        .show-more {
-            cursor: pointer;
-            color: #3273dc;
-            font-size: 0.9rem;
-            display: none;
-        }
-    </style>
-</head>
-
+<html lang="<?= htmlspecialchars($language) ?>">
+<?php include __DIR__ . '/../includes/head.php'; ?>
 <body>
-    <div class="has-text-centered">
-        <a href="./gallery_video.php" class="button is-link is-rounded mt-4">Назад</a>
+<?php include __DIR__ . '/../includes/header.php'; ?>
+
+<h1 class="museum-title"><?= htmlspecialchars($lang['photo']) ?></h1>
+
+<?php if (mysqli_num_rows($result_gallery) === 0): ?>
+    <p class="empty-state"><?= htmlspecialchars($lang['no_images']) ?></p>
+<?php else: ?>
+    <div class="gallery-grid">
+        <?php while ($row = mysqli_fetch_assoc($result_gallery)): ?>
+            <?php
+            $caption = preg_replace('/^[\s\x{00A0}\x{2800}]+|[\s\x{00A0}\x{2800}]+$/u', '', (string)$row['description']);
+            ?>
+            <button type="button" class="gallery-tile" onclick="openModal('<?= htmlspecialchars($row['file_name'], ENT_QUOTES) ?>', '<?= htmlspecialchars($caption, ENT_QUOTES) ?>')">
+                <img src="../admin/gallery/uploads/<?= htmlspecialchars($row['file_name']) ?>"
+                     alt="<?= htmlspecialchars($caption !== '' ? $caption : $lang['photo']) ?>"
+                     loading="lazy">
+                <?php if ($caption !== ''): ?>
+                    <p><?= htmlspecialchars($caption) ?></p>
+                <?php endif; ?>
+            </button>
+        <?php endwhile; ?>
     </div>
-    <div class="container gallery-container">
-        <h1 class="title has-text-centered">Фото архив</h1>
+<?php endif; ?>
 
-        <?php if (mysqli_num_rows($result_gallery) === 0) { ?>
-            <p class="has-text-centered">Нет изображений для отображения.</p>
-        <?php } ?>
-
-        <div class="columns is-multiline is-justify-content-center">
-            <?php while ($row = mysqli_fetch_assoc($result_gallery)) { ?>
-                <div class="column is-one-quarter gallery-item">
-                    <div class="card">
-                        <div class="card-image" onclick="openModal('<?= htmlspecialchars($row['file_name']) ?>', '<?= htmlspecialchars($row['description']) ?>')">
-                            <img src="../admin/gallery/uploads/<?= htmlspecialchars($row['file_name']) ?>" alt="Фото">
-                        </div>
-                        <div class="card-content">
-                            <p class="description"><?= htmlspecialchars($row['description']) ?></p>
-                            <span class="show-more" onclick="toggleDescription(this)">Показать больше</span>
-                        </div>
-                    </div>
-                </div>
-            <?php } ?>
+<div class="museum-modal" id="modal" onclick="if(event.target===this)closeModal()">
+    <div class="museum-modal__card">
+        <div class="museum-modal__head">
+            <span></span>
+            <button class="museum-modal__close" type="button" onclick="closeModal()" aria-label="<?= htmlspecialchars($lang['close']) ?>">×</button>
         </div>
-
-
+        <img id="modal-image" src="" alt="<?= htmlspecialchars($lang['photo']) ?>">
+        <p id="modal-desc" style="text-align:center;margin-top:1rem;"></p>
     </div>
+</div>
 
-    <!-- Модальное окно -->
-    <div id="modal" class="modal">
-        <div class="modal-background" onclick="closeModal()"></div>
-        <div class="modal-content">
-            <div class="box">
-                <img id="modal-image" src="" alt="Фото">
-                <p id="modal-desc" class="has-text-centered mt-3"></p>
-            </div>
-        </div>
-        <button class="modal-close is-large" onclick="closeModal()"></button>
-    </div>
+<script>
+    function openModal(image, desc) {
+        document.getElementById('modal-image').src = '../admin/gallery/uploads/' + image;
+        document.getElementById('modal-desc').textContent = desc;
+        document.getElementById('modal').classList.add('active');
+    }
+    function closeModal() {
+        document.getElementById('modal').classList.remove('active');
+    }
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeModal();
+    });
+</script>
 
-    <script>
-        function openModal(image, desc) {
-            document.getElementById('modal-image').src = '../admin/gallery/uploads/' + image;
-            document.getElementById('modal-desc').textContent = desc;
-            document.getElementById('modal').classList.add('is-active');
-        }
-
-        function closeModal() {
-            document.getElementById('modal').classList.remove('is-active');
-        }
-
-        function toggleDescription(button) {
-            let desc = button.previousElementSibling;
-            desc.classList.toggle('expanded');
-            button.textContent = desc.classList.contains('expanded') ? 'Скрыть' : 'Показать больше';
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll('.description').forEach(desc => {
-                if (desc.scrollHeight > 50) {
-                    desc.nextElementSibling.style.display = 'inline';
-                }
-            });
-        });
-    </script>
-
+<?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
-
 </html>

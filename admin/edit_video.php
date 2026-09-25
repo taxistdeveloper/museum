@@ -72,64 +72,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Редактировать видео</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <section class="section">
+    <section class="py-4">
         <div class="container">
-            <h1 class="title">Редактировать видео</h1>
+            <h1 class="h2">Редактировать видео</h1>
 
-            <form method="POST" enctype="multipart/form-data" class="box">
-                <div class="field">
-                    <label class="label">Название</label>
-                    <div class="control">
-                        <input class="input" name="title" required value="<?= htmlspecialchars($video['title']) ?>">
+            <form method="POST" enctype="multipart/form-data" class="card card-body">
+                <div class="mb-3">
+                    <label class="form-label">Название</label>
+                    <input class="form-control" name="title" required value="<?= htmlspecialchars($video['title']) ?>">
                     </div>
-                </div>
 
-                <div class="field">
-                    <label class="label">Категория</label>
-                    <div class="control">
-                        <input class="input" name="category" value="<?= htmlspecialchars($video['category']) ?>">
+                <div class="mb-3">
+                    <label class="form-label">Категория</label>
+                    <input class="form-control" name="category" value="<?= htmlspecialchars($video['category']) ?>">
                     </div>
-                </div>
 
-                <div class="field">
-                    <label class="label">Теги</label>
-                    <div class="control">
-                        <input class="input" name="tags" value="<?= htmlspecialchars($video['tags']) ?>">
+                <div class="mb-3">
+                    <label class="form-label">Теги</label>
+                    <input class="form-control" name="tags" value="<?= htmlspecialchars($video['tags']) ?>">
                     </div>
-                </div>
 
-                <div class="field">
-                    <label class="label">YouTube-ссылка</label>
-                    <div class="control">
-                        <input class="input" name="url" value="<?= htmlspecialchars($video['url']) ?>">
+                <div class="mb-3">
+                    <label class="form-label">YouTube-ссылка</label>
+                    <input class="form-control" name="url" value="<?= htmlspecialchars($video['url']) ?>">
                     </div>
-                </div>
 
-                <div class="field">
-                    <label class="label">Заменить видеофайл (необязательно)</label>
-                    <div class="control">
-                        <input type="file" name="video_file" accept="video/*">
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label">Заменить видеофайл (необязательно)</label>
+                    <input class="form-control" type="file" name="video_file" accept="video/*">
                     <?php if ($video['file_path']): ?>
                         <p class="mt-2">Текущее видео: <a href="<?= $video['file_path'] ?>" target="_blank">Смотреть</a></p>
                     <?php endif; ?>
                 </div>
 
-                <div class="field is-grouped mt-4">
-                    <div class="control">
-                        <button type="submit" class="button is-primary">Сохранить</button>
+                <div class="d-flex gap-2 flex-wrap mt-4">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a href="manage_video.php" class="btn btn-light">Назад</a>
                     </div>
-                    <div class="control">
-                        <a href="manage_video.php" class="button is-light">Назад</a>
-                    </div>
-                </div>
             </form>
         </div>
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

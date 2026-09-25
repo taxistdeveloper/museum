@@ -31,20 +31,21 @@ $result_students = mysqli_query($conn, $query_students);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Управление студентами</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
-        <h1 class="title has-text-centered mt-5">Управление студентами</h1>
+        <h1 class="h2 text-center mt-5">Управление студентами</h1>
         <!-- Кнопки навигации -->
         <div class="mb-4">
-            <a href="../admin/students/add_student.php" class="button is-primary mb-5">Добавить студента</a>
-            <a href="../admin/index.php" class="button is-light">Назад</a>
+            <a href="../admin/students/add_student.php" class="btn btn-primary mb-5">Добавить студента</a>
+            <a href="../admin/index.php" class="btn btn-light">Назад</a>
         </div>
 
 
-        <table class="table is-fullwidth is-striped">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -69,19 +70,20 @@ $result_students = mysqli_query($conn, $query_students);
                                 <img src="./students/uploads/<?= htmlspecialchars($row['image']) ?>" alt="Фото" style="width: 50px; height: 50px;">
                             </td>
                             <td>
-                                <a href="../admin/students/edit_student.php?id=<?= $row['id'] ?>" class="button is-small is-info">Редактировать</a>
-                                <a href="?delete=<?= $row['id'] ?>" class="button is-small is-danger" onclick="return confirm('Вы уверены, что хотите удалить этого студента?')">Удалить</a>
+                                <a href="../admin/students/edit_student.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-info">Редактировать</a>
+                                <a href="?delete=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этого студента?')">Удалить</a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="7" class="has-text-centered">Нет студентов для отображения</td>
+                        <td colspan="7" class="text-center">Нет студентов для отображения</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
         </table>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

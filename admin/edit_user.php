@@ -31,11 +31,19 @@ if (!$user_result || mysqli_num_rows($user_result) == 0) {
 
 $user_data = mysqli_fetch_assoc($user_result);
 
+$existing_columns = [];
+$columns_result = mysqli_query($conn, "SHOW COLUMNS FROM users");
+if ($columns_result) {
+    while ($row = mysqli_fetch_assoc($columns_result)) {
+        $existing_columns[] = $row['Field'];
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
-    $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
-    $role_id = (int)$_POST['role_id'];
+    $first_name = mysqli_real_escape_string($conn, $_POST['first_name'] ?? '');
+    $last_name = mysqli_real_escape_string($conn, $_POST['last_name'] ?? '');
+    $role_id = (int)($_POST['role_id'] ?? 0);
     $is_active = isset($_POST['is_active']) ? 1 : 0;
     $change_password = isset($_POST['change_password']) ? 1 : 0;
     
@@ -47,17 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $confirm_password = $_POST['confirm_password'];
     }
 
-    // Проверяем, какие поля существуют в таблице
-    $columns_result = mysqli_query($conn, "SHOW COLUMNS FROM users");
-    $existing_columns = [];
-    if ($columns_result) {
-        while ($row = mysqli_fetch_assoc($columns_result)) {
-            $existing_columns[] = $row['Field'];
-        }
-    }
+    $needs_name = in_array('first_name', $existing_columns, true) || in_array('last_name', $existing_columns, true);
 
     // Валидация
-    if (empty($username) || empty($first_name) || empty($last_name)) {
+    if (empty($username) || ($needs_name && (empty($first_name) || empty($last_name)))) {
         $error = 'Пожалуйста, заполните все обязательные поля';
     } elseif ($change_password && $password !== $confirm_password) {
         $error = 'Пароли не совпадают';
@@ -71,8 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($check_result && mysqli_num_rows($check_result) > 0) {
             $error = 'Пользователь с таким именем уже существует';
         } else {
-            // Формируем запрос на обновление только с существующими полями
-            $update_fields = "username = '$username', first_name = '$first_name', last_name = '$last_name'";
+            $update_fields = "username = '$username'";
+            if (in_array('first_name', $existing_columns, true)) {
+                $update_fields .= ", first_name = '$first_name'";
+            }
+            if (in_array('last_name', $existing_columns, true)) {
+                $update_fields .= ", last_name = '$last_name'";
+            }
             
             // Добавляем поля только если они существуют
             if (in_array('email', $existing_columns) && isset($_POST['email'])) {
@@ -391,28 +397,34 @@ if (mysqli_num_rows($roles_table_exists) > 0) {
             </div>
             <div class="card-body">
                 <form method="POST" action="">
+                    <?php if (in_array('first_name', $existing_columns, true) || in_array('last_name', $existing_columns, true)): ?>
                     <div class="row">
+                        <?php if (in_array('first_name', $existing_columns, true)): ?>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label" for="first_name">
                                     Имя <span class="required">*</span>
                                 </label>
                                 <input class="form-control" type="text" id="first_name" name="first_name" 
-                                       value="<?= htmlspecialchars($user_data['first_name']) ?>" 
+                                       value="<?= htmlspecialchars($user_data['first_name'] ?? '') ?>" 
                                        placeholder="Введите имя" required>
                             </div>
                         </div>
+                        <?php endif; ?>
+                        <?php if (in_array('last_name', $existing_columns, true)): ?>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label" for="last_name">
                                     Фамилия <span class="required">*</span>
                                 </label>
                                 <input class="form-control" type="text" id="last_name" name="last_name" 
-                                       value="<?= htmlspecialchars($user_data['last_name']) ?>" 
+                                       value="<?= htmlspecialchars($user_data['last_name'] ?? '') ?>" 
                                        placeholder="Введите фамилию" required>
                             </div>
                         </div>
+                        <?php endif; ?>
                     </div>
+                    <?php endif; ?>
 
                     <div class="row">
                         <div class="col-md-6">

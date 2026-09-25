@@ -1,74 +1,33 @@
 <?php
-require '../config.php';
+require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../includes/init.php';
 
-// Получаем всех директоров
-$query_directors = "SELECT * FROM directors ORDER BY created_at DESC";
-$result_directors = mysqli_query($conn, $query_directors);
+$result_directors = mysqli_query($conn, "SELECT * FROM directors ORDER BY created_at DESC");
+$museum_page_title = $lang['directors'];
+$museum_back_href = 'historyName.php?lang=' . urlencode($language);
 ?>
 <!DOCTYPE html>
-<html lang="ru">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="../assets/main.css" />
-</head>
-
+<html lang="<?= htmlspecialchars($language) ?>">
+<?php include __DIR__ . '/../includes/head.php'; ?>
 <body>
-    <div class="container">
-        <section class="header">
-            <div class="header__container">
-                <a class="logo" href="">
-                    <img
-                        src="../assets/img/logo.png"
-                        alt="" />
-                </a>
-                <div class="right">
-                    <div class="search">
-                        <a class="back" href="/">Назад</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+<?php include __DIR__ . '/../includes/header.php'; ?>
 
-        <section class="HistoryPeople">
-            <div class="history__container">
-                <div class="historyPeople__title">Директора учебного заведения</div>
-                <div class="historyPeople__content">
-                    За годы существования учебного заведения менялось ее наименование и
-                    организационно-правовая форма в зависимости от политических,
-                    социально-экономических, образовательных реформ в стране.
-                    Соответственно и назначение первых руководителей зависело от
-                    профессиональных задач, которые стояли на разных этапах
-                    образовательной деятельности учебного заведения.
-                </div>
-                <div class="humansGrid">
-                    <?php while ($director = mysqli_fetch_assoc($result_directors)): ?>
-                        <div class="HumanCard">
-                            <div class="image">
-                                <!-- Фото директора -->
-                                <img src="../admin/directors/assets/images/<?= $director['photo'] ?>" alt="Фото директора" class="director-image">
-                            </div>
-                            <div class="right">
-                                <div class="historyPeople__name">
-                                    <?= $director['name'] ?>
-                                </div>
-                                <div class="historyPeople__button">
-                                    <a href="../details/historypeople__directors__view.php?id=<?= $director['id'] ?>" class="button is-primary">Подробнее</a>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
+<h1 class="museum-title"><?= htmlspecialchars($lang['directors']) ?></h1>
+<p class="museum-lead"><?= htmlspecialchars($lang['hisdirectortext']) ?></p>
+<div class="person-grid">
+    <?php while ($director = mysqli_fetch_assoc($result_directors)): ?>
+        <article class="person-card">
+            <img src="../admin/directors/assets/images/<?= htmlspecialchars($director['photo']) ?>"
+                 alt="<?= htmlspecialchars($director['name'] ?? $director['name_ru'] ?? '') ?>"
+                 loading="lazy">
+            <h3><?= htmlspecialchars($director['name'] ?? $director['name_ru'] ?? '') ?></h3>
+            <a href="../details/historypeople__directors__view.php?id=<?= (int)$director['id'] ?>&lang=<?= urlencode($language) ?>" class="museum-btn">
+                <?= htmlspecialchars($lang['more']) ?>
+            </a>
+        </article>
+    <?php endwhile; ?>
+</div>
 
-                </div>
-
-
-
-
-            </div>
-        </section>
-    </div>
+<?php include __DIR__ . '/../includes/footer.php'; ?>
 </body>
-
 </html>

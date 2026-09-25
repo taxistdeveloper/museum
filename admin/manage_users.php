@@ -9,8 +9,26 @@ if (!isset($_SESSION['user_id'])) {
 
 include '../config.php';
 
+function museum_user_columns(mysqli $conn): array
+{
+    $columns = [];
+    $columns_result = mysqli_query($conn, "SHOW COLUMNS FROM users");
+    if ($columns_result) {
+        while ($column = mysqli_fetch_assoc($columns_result)) {
+            $columns[] = $column['Field'];
+        }
+    }
+    return $columns;
+}
+
+function museum_has_column(array $columns, string $name): bool
+{
+    return in_array($name, $columns, true);
+}
+
 // Проверяем существование таблиц
 $tables_exist = true;
+$existing_columns = [];
 $users_table_exists = mysqli_query($conn, "SHOW TABLES LIKE 'users'");
 $roles_table_exists = mysqli_query($conn, "SHOW TABLES LIKE 'roles'");
 
@@ -18,25 +36,22 @@ if (mysqli_num_rows($users_table_exists) == 0 || mysqli_num_rows($roles_table_ex
     $tables_exist = false;
     $result = false;
 } else {
-    // Проверяем существование поля role_id в таблице users
-    $check_role_id = mysqli_query($conn, "SHOW COLUMNS FROM users LIKE 'role_id'");
-    
-    if (mysqli_num_rows($check_role_id) == 0) {
-        // Если поле role_id не существует, получаем только пользователей
+    $existing_columns = museum_user_columns($conn);
+    $order_by = museum_has_column($existing_columns, 'created_at') ? 'u.created_at DESC' : 'u.id DESC';
+
+    if (!museum_has_column($existing_columns, 'role_id')) {
         $query = "SELECT u.*, 'user' as role_name, 'Пользователь' as role_description 
                   FROM users u 
-                  ORDER BY u.created_at DESC";
+                  ORDER BY $order_by";
     } else {
-        // Если поле role_id существует, делаем JOIN с таблицей ролей
         $query = "SELECT u.*, r.name as role_name, r.description as role_description 
                   FROM users u 
                   LEFT JOIN roles r ON u.role_id = r.id 
-                  ORDER BY u.created_at DESC";
+                  ORDER BY $order_by";
     }
-    
+
     $result = mysqli_query($conn, $query);
-    
-    // Проверяем на ошибки запроса
+
     if (!$result) {
         $error_message = "Ошибка базы данных: " . mysqli_error($conn);
     }
@@ -382,34 +397,56 @@ if (mysqli_num_rows($users_table_exists) == 0 || mysqli_num_rows($roles_table_ex
             </div>
         <?php elseif ($result && mysqli_num_rows($result) > 0): ?>
             <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                <?php
+                    $username = (string)($row['username'] ?? '');
+                    $first_name = museum_has_column($existing_columns, 'first_name') ? trim((string)($row['first_name'] ?? '')) : '';
+                    $last_name = museum_has_column($existing_columns, 'last_name') ? trim((string)($row['last_name'] ?? '')) : '';
+                    $display_name = trim($first_name . ' ' . $last_name);
+                    if ($display_name === '') {
+                        $display_name = $username !== '' ? $username : 'Пользователь';
+                    }
+                    $email = museum_has_column($existing_columns, 'email') ? trim((string)($row['email'] ?? '')) : '';
+                    $is_active = museum_has_column($existing_columns, 'is_active') ? !empty($row['is_active']) : true;
+                    $last_login = museum_has_column($existing_columns, 'last_login') ? ($row['last_login'] ?? null) : null;
+                    $created_at = $row['created_at'] ?? null;
+                    $role_name = strtolower((string)($row['role_name'] ?? 'user'));
+                    $role_description = (string)($row['role_description'] ?? '');
+                ?>
                 <div class="user-card">
                     <div class="user-header">
                         <div class="user-info">
-                            <h3><?= htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) ?></h3>
-                            <div class="user-email">@<?= htmlspecialchars($row['username']) ?> • <?= htmlspecialchars($row['email']) ?></div>
+                            <h3><?= htmlspecialchars($display_name) ?></h3>
+                            <div class="user-email">
+                                @<?= htmlspecialchars($username) ?>
+                                <?php if ($email !== ''): ?>
+                                    • <?= htmlspecialchars($email) ?>
+                                <?php endif; ?>
+                            </div>
                         </div>
                         <div class="user-actions">
-                            <a href="edit_user.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm">
+                            <a href="edit_user.php?id=<?= (int)$row['id'] ?>" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit me-1"></i>
                                 Редактировать
                             </a>
-                            <?php if ($row['id'] != $_SESSION['user_id']): ?>
-                                <a href="delete_user.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm" 
+                            <?php if ((int)$row['id'] !== (int)$_SESSION['user_id']): ?>
+                                <a href="delete_user.php?id=<?= (int)$row['id'] ?>" class="btn btn-danger btn-sm" 
                                    onclick="return confirm('Вы уверены, что хотите удалить этого пользователя?')">
                                     <i class="fas fa-trash me-1"></i>
                                     Удалить
                                 </a>
                             <?php endif; ?>
-                            <?php if ($row['is_active']): ?>
-                                <a href="toggle_user_status.php?id=<?= $row['id'] ?>&status=0" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-ban me-1"></i>
-                                    Заблокировать
-                                </a>
-                            <?php else: ?>
-                                <a href="toggle_user_status.php?id=<?= $row['id'] ?>&status=1" class="btn btn-success btn-sm">
-                                    <i class="fas fa-check me-1"></i>
-                                    Активировать
-                                </a>
+                            <?php if (museum_has_column($existing_columns, 'is_active')): ?>
+                                <?php if ($is_active): ?>
+                                    <a href="toggle_user_status.php?id=<?= (int)$row['id'] ?>&status=0" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-ban me-1"></i>
+                                        Заблокировать
+                                    </a>
+                                <?php else: ?>
+                                    <a href="toggle_user_status.php?id=<?= (int)$row['id'] ?>&status=1" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check me-1"></i>
+                                        Активировать
+                                    </a>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -418,35 +455,41 @@ if (mysqli_num_rows($users_table_exists) == 0 || mysqli_num_rows($roles_table_ex
                             <div class="detail-item">
                                 <div class="detail-label">Роль</div>
                                 <div class="detail-value">
-                                    <span class="role-badge role-<?= $row['role_name'] ?>">
-                                        <?= ucfirst($row['role_name']) ?>
+                                    <span class="role-badge role-<?= htmlspecialchars($role_name) ?>">
+                                        <?= htmlspecialchars(ucfirst($role_name)) ?>
                                     </span>
                                 </div>
                             </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Статус</div>
-                                <div class="detail-value">
-                                    <span class="status-badge status-<?= $row['is_active'] ? 'active' : 'inactive' ?>">
-                                        <?= $row['is_active'] ? 'Активен' : 'Заблокирован' ?>
-                                    </span>
+                            <?php if (museum_has_column($existing_columns, 'is_active')): ?>
+                                <div class="detail-item">
+                                    <div class="detail-label">Статус</div>
+                                    <div class="detail-value">
+                                        <span class="status-badge status-<?= $is_active ? 'active' : 'inactive' ?>">
+                                            <?= $is_active ? 'Активен' : 'Заблокирован' ?>
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Последний вход</div>
-                                <div class="detail-value">
-                                    <?= $row['last_login'] ? date('d.m.Y H:i', strtotime($row['last_login'])) : 'Никогда' ?>
+                            <?php endif; ?>
+                            <?php if (museum_has_column($existing_columns, 'last_login')): ?>
+                                <div class="detail-item">
+                                    <div class="detail-label">Последний вход</div>
+                                    <div class="detail-value">
+                                        <?= $last_login ? date('d.m.Y H:i', strtotime((string)$last_login)) : 'Никогда' ?>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Дата создания</div>
-                                <div class="detail-value">
-                                    <?= date('d.m.Y', strtotime($row['created_at'])) ?>
+                            <?php endif; ?>
+                            <?php if ($created_at): ?>
+                                <div class="detail-item">
+                                    <div class="detail-label">Дата создания</div>
+                                    <div class="detail-value">
+                                        <?= date('d.m.Y', strtotime((string)$created_at)) ?>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php endif; ?>
                         </div>
-                        <?php if ($row['role_description']): ?>
+                        <?php if ($role_description !== ''): ?>
                             <div class="mt-2">
-                                <small class="text-muted"><?= htmlspecialchars($row['role_description']) ?></small>
+                                <small class="text-muted"><?= htmlspecialchars($role_description) ?></small>
                             </div>
                         <?php endif; ?>
                     </div>

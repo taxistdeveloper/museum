@@ -54,14 +54,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Добавить преподавателя</title>
-    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" rel="stylesheet">
-    <script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script>
         function addEducationField() {
             var container = document.getElementById("educationFields");
             var input = document.createElement("input");
             input.type = "text";
             input.name = "education[]";
-            input.classList.add("input", "mt-2");
+            input.classList.add("form-control", "mt-2");
             container.appendChild(input);
         }
     </script>
@@ -69,76 +70,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
     <div class="container">
-        <h1 class="title has-text-centered mt-5">Добавить преподавателя</h1>
+        <h1 class="h2 text-center mt-5">Добавить преподавателя</h1>
 
         <?php if (isset($_SESSION['message'])): ?>
-            <div class="notification is-<?= $_SESSION['message_type']; ?>">
+            <div class="alert alert-<?= $_SESSION['message_type']; ?>">
                 <?= $_SESSION['message']; ?>
             </div>
             <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
         <?php endif; ?>
 
-        <div class="tabs is-centered">
-            <ul>
-                <li class="<?= $lang == 'ru' ? 'is-active' : '' ?>"><a href="?lang=ru">Русский</a></li>
-                <li class="<?= $lang == 'kz' ? 'is-active' : '' ?>"><a href="?lang=kz">Қазақша</a></li>
-                <li class="<?= $lang == 'en' ? 'is-active' : '' ?>"><a href="?lang=en">English</a></li>
+        <ul class="nav nav-tabs justify-content-center mb-3">
+                <li class="nav-item"><a class="nav-link <?= $lang == 'ru' ? 'active' : '' ?>" href="?lang=ru">Русский</a></li>
+                <li class="nav-item"><a class="nav-link <?= $lang == 'kz' ? 'active' : '' ?>" href="?lang=kz">Қазақша</a></li>
+                <li class="nav-item"><a class="nav-link <?= $lang == 'en' ? 'active' : '' ?>" href="?lang=en">English</a></li>
             </ul>
-        </div>
 
-        <form method="POST" enctype="multipart/form-data" class="box">
-            <div class="field">
-                <label class="label">Имя преподавателя</label>
-                <div class="control">
-                    <input class="input" type="text" name="name" required>
+        <form method="POST" enctype="multipart/form-data" class="card card-body">
+            <div class="mb-3">
+                <label class="form-label">Имя преподавателя</label>
+                <input class="form-control" type="text" name="name" required>
                 </div>
+
+            <div class="mb-3">
+                <label class="form-label">Описание</label>
+                <textarea class="form-control" name="description" required></textarea>
+                </div>
+
+            <div class="mb-3">
+                <label class="form-label">Образование</label>
+                <div id="educationFields">
+                    <input class="form-control" type="text" name="education[]" required>
+                </div>
+                <button type="button" class="btn btn-info mt-2" onclick="addEducationField()">Добавить образование</button>
             </div>
 
-            <div class="field">
-                <label class="label">Описание</label>
-                <div class="control">
-                    <textarea class="textarea" name="description" required></textarea>
+            <div class="mb-3">
+                <label class="form-label">Работает в колледже</label>
+                <input class="form-control" type="text" name="works_in_college" required>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Образование</label>
-                <div id="educationFields" class="control">
-                    <input class="input" type="text" name="education[]" required>
+            <div class="mb-3">
+                <label class="form-label">Должность</label>
+                <input class="form-control" type="text" name="position" required>
                 </div>
-                <button type="button" class="button is-info mt-2" onclick="addEducationField()">Добавить образование</button>
-            </div>
 
-            <div class="field">
-                <label class="label">Работает в колледже</label>
-                <div class="control">
-                    <input class="input" type="text" name="works_in_college" required>
+            <div class="mb-3">
+                <label class="form-label">Фото преподавателя</label>
+                <input class="form-control" type="file" name="image" accept="image/*">
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Должность</label>
-                <div class="control">
-                    <input class="input" type="text" name="position" required>
+            <div class="mb-3">
+                <button class="btn btn-primary">Добавить</button>
                 </div>
-            </div>
-
-            <div class="field">
-                <label class="label">Фото преподавателя</label>
-                <div class="control">
-                    <input class="input" type="file" name="image" accept="image/*">
-                </div>
-            </div>
-
-            <div class="field">
-                <div class="control">
-                    <button class="button is-primary">Добавить</button>
-                </div>
-            </div>
         </form>
 
-        <a href="../manage_teachers.php" class="button is-light mt-4">← Назад</a>
+        <a href="../manage_teachers.php" class="btn btn-light mt-4">← Назад</a>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
