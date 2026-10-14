@@ -98,11 +98,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     </script>
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2 mt-5">Редактировать директора: <?= htmlspecialchars($director['name_ru'] ?? '') ?></h1>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="../manage_directors.php">Директора</a>
+                <h1>Редактировать: <?= htmlspecialchars($director['name_ru'] ?? '') ?></h1>
+            </div>
+        </header>
 
         <!-- Сообщение об ошибке или успехе -->
         <?php if (isset($_SESSION['message'])): ?>
@@ -120,41 +128,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </ul>
 
         <form action="" method="POST" enctype="multipart/form-data">
-            <!-- Имя и биография в зависимости от выбранного языка -->
             <div class="mb-3">
                 <label class="form-label">Имя</label>
                 <input class="form-control" type="text" name="name" value="<?= htmlspecialchars($director['name_' . $lang] ?? '') ?>" required>
-                </div>
+            </div>
 
             <div class="mb-3">
                 <label class="form-label">Биография</label>
-                <textarea class="form-control" name="biography" required><?= htmlspecialchars($director['biography_' . $lang] ?? '') ?></textarea>
-                </div>
+                <textarea class="form-control" name="biography" rows="5" required><?= htmlspecialchars($director['biography_' . $lang] ?? '') ?></textarea>
             </div>
 
-            <!-- Фото -->
             <div class="mb-3">
                 <label class="form-label">Фото</label>
                 <input class="form-control" type="file" name="photo" accept="image/*">
-                    <p>Текущее фото: <img src="assets/images/<?= htmlspecialchars($director['photo'] ?? '') ?>" alt="Фото директора" width="100"></p>
-                </div>
+                <?php if (!empty($director['photo'])): ?>
+                    <p class="form-hint">Текущее фото</p>
+                    <img class="form-preview" src="assets/images/<?= htmlspecialchars($director['photo']) ?>" alt="Фото директора">
+                <?php endif; ?>
             </div>
 
-            <!-- Галерея -->
             <div class="mb-3">
-                <label class="form-label">Галерея (несколько фото)</label>
+                <label class="form-label">Галерея</label>
                 <input class="form-control" type="file" name="gallery[]" accept="image/*" multiple>
-                    <p>Текущая галерея:</p>
-                    <?php if (!empty($director['gallery'])): ?>
+                <?php if (!empty($director['gallery'])): ?>
+                    <p class="form-hint">Текущая галерея. Новые файлы заменят этот набор.</p>
+                    <div class="form-previews">
                         <?php foreach (explode(',', $director['gallery']) as $gallery_image): ?>
-                            <img src="assets/images/<?= htmlspecialchars($gallery_image) ?>" alt="Gallery Image" width="100" style="margin-right: 10px;">
+                            <?php if (trim($gallery_image) === '') continue; ?>
+                            <img class="form-preview" src="assets/images/<?= htmlspecialchars(trim($gallery_image)) ?>" alt="">
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </div>
+                    </div>
+                <?php endif; ?>
+            </div>
 
-            <div class="mb-3">
-                <button class="btn btn-primary" type="submit">Сохранить изменения</button>
-                </div>
+            <button class="btn btn-primary" type="submit">Сохранить изменения</button>
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

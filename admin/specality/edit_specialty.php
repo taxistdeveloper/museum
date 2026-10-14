@@ -68,85 +68,12 @@ while ($row = mysqli_fetch_assoc($icon_result)) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            background: #f8f9fa;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .container-box {
-            max-width: 860px;
-            margin: 40px auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            background: #007bff;
-            color: white;
-            padding: 30px;
-            text-align: center;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .content {
-            padding: 30px;
-        }
-
-        .btn-back {
-            background: #6c757d;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-
-        .tabs a {
-            padding: 10px 15px;
-            margin-right: 5px;
-            background: #e9ecef;
-            border-radius: 5px;
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .tabs a.active {
-            background: #007bff;
-            color: white;
-        }
-
-        .icon-box {
-            width: 100px;
-            text-align: center;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .icon-box:hover {
-            background: #f0f0f0;
-        }
-
-        .icon-box.selected {
-            border: 2px solid #007bff;
-            background: #e7f1ff;
-        }
-
-        .icon-box i {
-            font-size: 1.8rem;
-            color: #007bff;
-        }
-
-        .icon-box input {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
 
     <div class="container-box">
         <div class="header">

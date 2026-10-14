@@ -32,22 +32,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Регистрация</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/admin.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1 class="h2">Регистрация нового пользователя</h1>
-        <form action="register.php" method="POST">
-            <div class="mb-3">
-                <label class="form-label">Имя пользователя</label>
-                <input class="form-control" type="text" name="username" required>
+    <?php require __DIR__ . '/includes/topbar.php'; ?>
+
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <h1>Регистрация</h1>
+            <form action="register.php" method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Имя пользователя</label>
+                    <input class="form-control" type="text" name="username" required>
                 </div>
-            <div class="mb-3">
-                <label class="form-label">Пароль</label>
-                <input class="form-control" type="password" name="password" required>
+                <div class="mb-3">
+                    <label class="form-label">Пароль</label>
+                    <input class="form-control" type="password" name="password" required>
                 </div>
-            <button class="btn btn-primary" type="submit">Зарегистрировать</button>
-        </form>
+                <button class="btn btn-primary w-100" type="submit">Зарегистрировать</button>
+            </form>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

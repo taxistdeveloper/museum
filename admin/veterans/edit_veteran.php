@@ -133,11 +133,19 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             }
         }
     </script>
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2 mt-5">Редактировать ветерана <?= htmlspecialchars($veteran['name_' . $lang] ?? '') ?></h1>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="../manage_veterans.php">Ветераны</a>
+                <h1>Редактировать: <?= htmlspecialchars($veteran['name_' . $lang] ?? '') ?></h1>
+            </div>
+        </header>
 
         <!-- Сообщение об ошибке или успехе -->
         <?php if (isset($_SESSION['message'])): ?>

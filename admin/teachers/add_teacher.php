@@ -66,11 +66,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             container.appendChild(input);
         }
     </script>
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2 text-center mt-5">Добавить преподавателя</h1>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="../manage_teachers.php">Преподаватели</a>
+                <h1>Новый преподаватель</h1>
+                <p>Сначала выберите язык, затем заполните карточку.</p>
+            </div>
+        </header>
 
         <?php if (isset($_SESSION['message'])): ?>
             <div class="alert alert-<?= $_SESSION['message_type']; ?>">

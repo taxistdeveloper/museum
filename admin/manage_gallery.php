@@ -24,45 +24,21 @@ $result_gallery = mysqli_query($conn, $query_gallery);
     <title>Управление галереей</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-<style>
-        body {
-            background-color: #f5f5f5;
-        }
-
-        .gallery-container {
-            margin-top: 30px;
-        }
-
-        .gallery-item {
-            margin-bottom: 30px;
-        }
-
-        .card {
-            border-radius: 10px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .card-content {
-            background: #fff;
-            padding: 15px;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/includes/topbar.php'; ?>
+
     <div class="container gallery-container">
-        <h1 class="h2 text-center">Управление галереей</h1>
-        <!-- Кнопки навигации -->
-        <div class="mb-4">
-            <a href="./gallery/add_gallery.php" class="btn btn-primary mb-5">Добавить изображение</a>
-            <a href="../admin/index.php" class="btn btn-light">Назад</a>
-        </div>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="index.php">Разделы</a>
+                <h1>Фото</h1>
+                <p>Снимки галереи и короткая подпись.</p>
+            </div>
+            <a class="btn btn-primary" href="gallery/add_gallery.php">Добавить</a>
+        </header>
 
 
         <div class="row g-3">
@@ -73,7 +49,7 @@ $result_gallery = mysqli_query($conn, $query_gallery);
                             <img src="../admin/gallery/uploads/<?= htmlspecialchars($row['file_name']) ?>" alt="Фото" class="gallery-image">
                         </div>
                         <div class="card-body">
-                            <p class="text-muted text-center"><?= htmlspecialchars($row['description']) ?></p>
+                            <p class="text-muted"><?= htmlspecialchars(htmlspecialchars_decode((string) $row['description'])) ?></p>
                             <div class="d-flex justify-content-center gap-2 flex-wrap mt-3">
                                 <a href="../admin/gallery/edit_gallery.php?id=<?= $row['id'] ?>" class="btn btn-info">Редактировать</a>
                                 <a href="../admin/gallery/delete_gallery.php?id=<?= $row['id'] ?>"

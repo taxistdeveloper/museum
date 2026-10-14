@@ -64,11 +64,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             container.appendChild(inputField);
         }
     </script>
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2 text-center mt-5">Добавить студента</h1>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="../manage_students.php">Студенты</a>
+                <h1>Новый студент</h1>
+                <p>Имя, группа и фото.</p>
+            </div>
+        </header>
 
         <form action="add_student.php" method="POST" enctype="multipart/form-data" class="card card-body">
             <div class="mb-3">

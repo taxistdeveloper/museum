@@ -93,11 +93,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     </script>
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2 mt-5">Добавить директора</h1>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="../manage_directors.php">Директора</a>
+                <h1>Новый директор</h1>
+                <p>Имя, биография и фото.</p>
+            </div>
+        </header>
 
         <!-- Выводим сообщение, если оно существует -->
         <?php if (isset($_SESSION['message'])): ?>

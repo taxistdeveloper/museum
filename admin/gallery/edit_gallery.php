@@ -37,11 +37,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Редактировать описание</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container mt-5">
-        <h1 class="h2 text-center">Редактировать описание</h1>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="../manage_gallery.php">Фото</a>
+                <h1>Подпись к фото</h1>
+            </div>
+        </header>
 
         <?php if (isset($errorMsg)) { ?>
             <div class="alert alert-danger"><?= $errorMsg ?></div>
@@ -50,12 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form action="" method="POST">
             <div class="mb-3">
                 <label class="form-label">Новое описание</label>
-                <textarea class="form-control" name="description"><?= htmlspecialchars($image['description']) ?></textarea>
-                </div>
+                <textarea class="form-control" name="description" rows="4"><?= htmlspecialchars($image['description']) ?></textarea>
             </div>
-            <div class="d-flex gap-2 flex-wrap is-justify-content-center mt-4">
+            <div class="d-flex gap-2 flex-wrap">
                 <button type="submit" class="btn btn-primary">Сохранить</button>
                 <a href="../manage_gallery.php" class="btn btn-light">Назад</a>
+            </div>
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

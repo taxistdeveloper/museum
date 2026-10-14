@@ -74,12 +74,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Редактировать видео</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/includes/topbar.php'; ?>
+
     <section class="py-4">
         <div class="container">
-            <h1 class="h2">Редактировать видео</h1>
+            <header class="page-head">
+                <div>
+                    <a class="back-link" href="manage_video.php">Видео</a>
+                    <h1>Редактировать видео</h1>
+                </div>
+            </header>
 
             <form method="POST" enctype="multipart/form-data" class="card card-body">
                 <div class="mb-3">

@@ -56,9 +56,12 @@ $result = mysqli_query($conn, $query);
             }
         }
     </script>
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container">
         <h1 class="h2 text-center mt-5">Управление директорами</h1>
         <form method="GET" action="">
@@ -94,7 +97,7 @@ $result = mysqli_query($conn, $query);
                     <?php while ($row = mysqli_fetch_assoc($result)): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($row['name_' . $language] ?? ''); ?></td>
-                            <td><?php echo nl2br(htmlspecialchars($row['biography_' . $language] ?? '')); ?></td>
+                            <td><?php echo admin_preview($row['biography_' . $language] ?? ''); ?></td>
                             <td>
                                 <a href="directors/edit_director.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-info">Редактировать</a>
                                 <a href="directors/delete_director.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этого директора?');">Удалить</a>

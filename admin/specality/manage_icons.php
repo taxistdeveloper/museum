@@ -61,22 +61,12 @@ $result = mysqli_query($conn, "SELECT * FROM icon_library ORDER BY id DESC");
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .icon-preview {
-            font-size: 1.8rem;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .icon-preview img {
-            max-height: 48px;
-        }
-    </style>
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body class="bg-light py-4">
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
 
     <div class="container">
         <h2 class="mb-4">Управление иконками</h2>

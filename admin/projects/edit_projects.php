@@ -94,14 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-<style>
-        img.gallery-thumb {
-            width: 100px;
-            margin: 5px;
-            border-radius: 6px;
-            object-fit: cover;
-        }
-    </style>
 
     <!-- CKEditor -->
     <script src="https://cdn.ckeditor.com/4.22.1/standard-all/ckeditor.js"></script>
@@ -116,11 +108,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (msg) setTimeout(() => msg.style.display = 'none', 3000);
         };
     </script>
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2 mt-5">Редактировать проект</h1>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="../manage_projects.php">Проекты</a>
+                <h1>Редактировать проект</h1>
+            </div>
+        </header>
 
         <?php if (isset($_SESSION['message'])): ?>
             <div id="message" class="alert alert-<?= $_SESSION['message_type'] ?>">
@@ -164,7 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-            </div>
 
             <div class="mb-3 mt-4">
                 <button class="btn btn-primary" type="submit">Сохранить изменения</button>

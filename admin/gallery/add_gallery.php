@@ -74,11 +74,20 @@ function createCollage($imagePaths, $outputPath)
     <title>Добавить изображения</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container mt-5">
-        <h1 class="h2 text-center">Добавить изображения</h1>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="../manage_gallery.php">Фото</a>
+                <h1>Новые фото</h1>
+                <p>Одна подпись применится ко всем выбранным снимкам.</p>
+            </div>
+        </header>
 
         <?php if (isset($successMsg)) { ?>
             <div class="alert alert-success">
@@ -94,16 +103,16 @@ function createCollage($imagePaths, $outputPath)
         <form action="" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label">Описание</label>
-                <textarea class="form-control" name="description" placeholder="Введите описание"></textarea>
-                </div>
-            <div class="mb-3">
-                <label class="form-label">Выберите изображения</label>
-                <input class="form-control" type="file" name="images[]" multiple required>
-                </div>
+                <textarea class="form-control" name="description" rows="3" placeholder="Введите описание"></textarea>
             </div>
-            <div class="d-flex gap-2 flex-wrap is-justify-content-center mt-4">
+            <div class="mb-3">
+                <label class="form-label">Изображения</label>
+                <input class="form-control" type="file" name="images[]" multiple required>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
                 <button type="submit" class="btn btn-primary">Добавить</button>
                 <a href="../manage_gallery.php" class="btn btn-light">Назад</a>
+            </div>
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

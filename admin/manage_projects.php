@@ -39,17 +39,21 @@ $result = mysqli_query($conn, $query);
             }
         }
     </script>
+    <link rel="stylesheet" href="../assets/admin.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1 class="h2 text-center mt-5">Управление проектами</h1>
+    <?php require __DIR__ . '/includes/topbar.php'; ?>
 
-        <!-- Кнопки навигации -->
-        <div class="mb-4">
-            <a href="projects/add_project.php" class="btn btn-primary">Добавить проект</a>
-            <a href="../admin/index.php" class="btn btn-light">Назад</a>
-        </div>
+    <div class="container">
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="index.php">Разделы</a>
+                <h1>Проекты</h1>
+                <p>Название, описание и дата на сайте.</p>
+            </div>
+            <a class="btn btn-primary" href="projects/add_project.php">Добавить</a>
+        </header>
 
         <!-- Сообщение -->
         <?php if (isset($_SESSION['message'])): ?>
@@ -78,7 +82,7 @@ $result = mysqli_query($conn, $query);
                     <?php while ($row = mysqli_fetch_assoc($result)): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($row['name']); ?></td>
-                            <td><?php echo nl2br(htmlspecialchars($row['description'])); ?></td>
+                            <td><?php echo admin_preview($row['description']); ?></td>
                             <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                             <td>
                                 <a href="projects/edit_projects.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-info">Редактировать</a>

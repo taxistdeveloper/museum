@@ -34,11 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Редактирование истории</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2">Редактирование истории</h1>
+        <header class="page-head">
+            <div>
+                <h1>Редактировать историю</h1>
+            </div>
+        </header>
         <form action="edit_history.php?id=<?= $id ?>" method="POST">
             <div class="mb-3">
                 <label class="form-label">Название</label>

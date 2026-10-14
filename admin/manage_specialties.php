@@ -30,16 +30,21 @@ $result = mysqli_query($conn, $query);
     <title>Управление специальностями</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2 text-center mt-5">Управление специальностями</h1>
-        <!-- Кнопки навигации -->
-        <div class="mb-4">
-            <a href="../admin/specality/add_speciality.php" class="btn btn-success mb-5">Добавить специальность</a>
-            <a href="../admin/index.php" class="btn btn-light">Назад</a>
-        </div>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="index.php">Разделы</a>
+                <h1>Специальности</h1>
+                <p>Название и описание программы.</p>
+            </div>
+            <a class="btn btn-primary" href="specality/add_speciality.php">Добавить</a>
+        </header>
 
 
         <table class="table table-striped table-hover">

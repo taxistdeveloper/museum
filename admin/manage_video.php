@@ -60,44 +60,26 @@ $videos = $conn->query("SELECT * FROM videos ORDER BY created_at DESC");
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <script src="https://kit.fontawesome.com/a2e0e9e6e0.js" crossorigin="anonymous"></script>
-    <style>
-        body[data-theme="dark"] {
-            background: #121212;
-            color: #eee;
-        }
-
-        body[data-theme="dark"] .box,
-        body[data-theme="dark"] .table {
-            background: #1f1f1f;
-            color: #eee;
-        }
-
-        .preview-thumb {
-            width: 100px;
-            cursor: pointer;
-        }
-
-        .modal-content video,
-        .modal-content iframe {
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/includes/topbar.php'; ?>
+
     <section class="py-4">
         <div class="container">
-            <h1 class="h2">📽 Управление видеоархивом</h1>
+            <header class="page-head">
+                <div>
+                    <a class="back-link" href="index.php">Разделы</a>
+                    <h1>Видео</h1>
+                    <p>Сначала заполните карточку, затем список ниже.</p>
+                </div>
+            </header>
 
             <?php if (!empty($_SESSION['message'])): ?>
                 <div class="alert alert-success"><?= $_SESSION['message'];
                                                         unset($_SESSION['message']); ?></div>
             <?php endif; ?>
-
-            <div class="d-flex gap-2 flex-wrap justify-content-between mb-3">
-                <a href="index.php" class="btn btn-light">Назад</a>
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleTheme()">Переключить тему</button>
-            </div>
 
             <form method="POST" enctype="multipart/form-data" class="card card-body mt-3">
                 <div class="mb-3">

@@ -33,16 +33,21 @@ $result_students = mysqli_query($conn, $query_students);
     <title>Управление студентами</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2 text-center mt-5">Управление студентами</h1>
-        <!-- Кнопки навигации -->
-        <div class="mb-4">
-            <a href="../admin/students/add_student.php" class="btn btn-primary mb-5">Добавить студента</a>
-            <a href="../admin/index.php" class="btn btn-light">Назад</a>
-        </div>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="index.php">Разделы</a>
+                <h1>Студенты</h1>
+                <p>Имя, группа и фото.</p>
+            </div>
+            <a class="btn btn-primary" href="students/add_student.php">Добавить</a>
+        </header>
 
 
         <table class="table table-striped table-hover">

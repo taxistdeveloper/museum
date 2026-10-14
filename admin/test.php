@@ -114,9 +114,12 @@ if (!isset($_SESSION['user_id'])) {
             }
         }
     </style>
+    <link rel="stylesheet" href="../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/includes/topbar.php'; ?>
+
 
     <!-- Sidebar -->
     <div class="sidebar">

@@ -42,18 +42,21 @@ $result = mysqli_query($conn, $query);
             }
         }
     </script>
+    <link rel="stylesheet" href="../assets/admin.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1 class="h2 text-center mt-5">Управление ветеранами</h1>
+    <?php require __DIR__ . '/includes/topbar.php'; ?>
 
-        <div class="mb-4">
-            <a href="veterans/add_veteran.php" class="btn btn-primary">Добавить ветерана</a>
-        </div>
-        <div class="mb-4">
-            <a href="../admin/index.php" class="btn btn-primary">Назад</a>
-        </div>
+    <div class="container">
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="index.php">Разделы</a>
+                <h1>Ветераны</h1>
+                <p>Имя и биография в разделе ветеранов.</p>
+            </div>
+            <a class="btn btn-primary" href="veterans/add_veteran.php">Добавить</a>
+        </header>
         <?php if (mysqli_num_rows($result) == 0): ?>
             <div class="alert alert-warning">
                 Нет доступных ветеранов.
@@ -71,7 +74,7 @@ $result = mysqli_query($conn, $query);
                     <?php while ($row = mysqli_fetch_assoc($result)): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($row['name']); ?></td>
-                            <td><?php echo nl2br(htmlspecialchars($row['biography'])); ?></td>
+                            <td><?php echo admin_preview($row['biography']); ?></td>
                             <td>
                                 <a href="veterans/edit_veteran.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-info">Редактировать</a>
                                 <a href="veterans/delete_veteran.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этого ветерана?');">Удалить</a>

@@ -99,11 +99,20 @@ ob_end_flush(); // Завершаем буферизацию вывода
             }
         }
     </script>
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2 mt-5">Добавить проект</h1>
+        <header class="page-head">
+            <div>
+                <a class="back-link" href="../manage_projects.php">Проекты</a>
+                <h1>Новый проект</h1>
+                <p>Название и описание для выбранного языка.</p>
+            </div>
+        </header>
 
         <!-- Выводим сообщение, если оно существует -->
         <?php if (isset($_SESSION['message'])): ?>

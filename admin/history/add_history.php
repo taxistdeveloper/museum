@@ -27,11 +27,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Добавление истории колледжа</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/admin.css">
 </head>
 
 <body>
+    <?php require __DIR__ . '/../includes/topbar.php'; ?>
+
     <div class="container">
-        <h1 class="h2">Добавление истории колледжа</h1>
+        <header class="page-head">
+            <div>
+                <h1>Новая запись истории</h1>
+                <p>Заголовок и текст появятся в разделе истории колледжа.</p>
+            </div>
+        </header>
         <form action="add_history.php" method="POST">
             <div class="mb-3">
                 <label class="form-label">Название</label>
