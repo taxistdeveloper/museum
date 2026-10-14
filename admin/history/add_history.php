@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $query = "INSERT INTO history (title, content) VALUES ('$title', '$content')";
     if (mysqli_query($conn, $query)) {
         // Перенаправляем на страницу history.php после успешного добавления
-        header("Location: ././pages/history.php");
+        header("Location: ../../pages/history.php?message=success");
         exit();  // Останавливаем выполнение скрипта
     } else {
         echo "Ошибка: " . mysqli_error($conn);

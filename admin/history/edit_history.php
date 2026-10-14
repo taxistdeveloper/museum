@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $update_query = "UPDATE history SET title = '$title', content = '$content' WHERE id = $id";
     if (mysqli_query($conn, $update_query)) {
-        header("Location: ././pages/history.php?message=success");
+        header("Location: ../../pages/history.php?message=success");
         exit;
     } else {
         echo "Ошибка: " . mysqli_error($conn);
