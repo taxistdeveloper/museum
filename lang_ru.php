@@ -88,4 +88,7 @@ $lang = [
     'views' => 'Просмотров',
     'project_description' => 'Описание проекта',
     'teachers_list' => 'Преподаватели колледжа',
+    'specialty_qualifications' => 'Квалификации',
+    'specialty_study' => 'Обучение',
+    'specialty_demand' => 'Востребованность',
 ];

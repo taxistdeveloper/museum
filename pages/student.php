@@ -14,21 +14,20 @@ $museum_page_title = $lang['Ourstudent'];
 <h1 class="museum-title"><?= htmlspecialchars($lang['Ourstudent']) ?></h1>
 <div class="student-grid">
     <?php while ($student = mysqli_fetch_assoc($result_students)): ?>
-        <div class="student-card">
-            <div class="student-card__row">
-                <img class="student-img"
-                     src="../admin/students/uploads/<?= htmlspecialchars($student['image']) ?>"
-                     alt="<?= htmlspecialchars($student['name']) ?>"
-                     loading="lazy">
-                <div>
-                    <h3><?= htmlspecialchars($student['name']) ?></h3>
-                    <p><strong><?= htmlspecialchars($lang['group']) ?>:</strong> <?= htmlspecialchars($student['group_name'] ?? '—') ?></p>
-                    <button class="museum-btn" type="button" onclick="openModal(<?= (int)$student['id'] ?>)">
-                        <?= htmlspecialchars($lang['lookachstudent']) ?>
-                    </button>
-                </div>
-            </div>
-        </div>
+        <article class="student-card">
+            <img class="student-img"
+                 src="../admin/students/uploads/<?= htmlspecialchars($student['image']) ?>"
+                 alt="<?= htmlspecialchars($student['name']) ?>"
+                 loading="lazy">
+            <h3 class="student-card__name"><?= htmlspecialchars($student['name']) ?></h3>
+            <p class="student-card__group">
+                <span><?= htmlspecialchars($lang['group']) ?></span>
+                <?= htmlspecialchars($student['group_name'] ?? '—') ?>
+            </p>
+            <button class="museum-btn student-card__btn" type="button" onclick="openModal(<?= (int)$student['id'] ?>)">
+                <?= htmlspecialchars($lang['lookachstudent']) ?>
+            </button>
+        </article>
 
         <div class="museum-modal" id="modal<?= (int)$student['id'] ?>" onclick="if(event.target===this)closeModal(<?= (int)$student['id'] ?>)">
             <div class="museum-modal__card">

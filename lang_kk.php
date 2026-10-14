@@ -87,4 +87,7 @@ $lang = [
     'views' => 'Қаралым',
     'project_description' => 'Жоба сипаттамасы',
     'teachers_list' => 'Колледж оқытушылары',
+    'specialty_qualifications' => 'Біліктіліктер',
+    'specialty_study' => 'Оқу',
+    'specialty_demand' => 'Сұраныс',
 ];

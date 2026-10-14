@@ -19,35 +19,40 @@ $museum_page_title = $lang['teachers_list'];
 <?php include __DIR__ . '/../includes/header.php'; ?>
 
 <h1 class="museum-title"><?= htmlspecialchars($lang['teachers']) ?></h1>
-
+<div class="teacher-grid">
 <?php while ($teacher = mysqli_fetch_assoc($result_teachers)): ?>
-    <article class="profile-card">
-        <div class="profile-card__row">
-            <img src="../admin/teachers/uploads/<?= htmlspecialchars($teacher['image']) ?>"
-                 alt="<?= htmlspecialchars($teacher['localized_name']) ?>"
-                 loading="lazy">
-            <div>
-                <h2><?= htmlspecialchars($teacher['localized_name']) ?></h2>
-                <p><strong><?= htmlspecialchars($lang['education']) ?>:</strong></p>
+    <article class="teacher-card">
+        <img class="teacher-card__img"
+             src="../admin/teachers/uploads/<?= htmlspecialchars($teacher['image']) ?>"
+             alt="<?= htmlspecialchars($teacher['localized_name']) ?>"
+             loading="lazy">
+        <h3 class="teacher-card__name"><?= htmlspecialchars($teacher['localized_name']) ?></h3>
+        <div class="teacher-card__meta">
+            <p>
+                <span><?= htmlspecialchars($lang['work']) ?></span>
+                <?= htmlspecialchars($teacher['position']) ?>
+            </p>
+            <p>
+                <span><?= htmlspecialchars($lang['yearwork']) ?></span>
+                <?= htmlspecialchars($lang['from_year']) ?> <?= htmlspecialchars($teacher['works_in_college']) ?>
+            </p>
+            <p>
+                <span><?= htmlspecialchars($lang['education']) ?></span>
                 <?php
                 $education = json_decode($teacher['education']);
                 if (is_array($education) && count($education) > 0) {
-                    echo '<ul>';
-                    foreach ($education as $edu) {
-                        echo '<li>' . htmlspecialchars($edu) . '</li>';
-                    }
-                    echo '</ul>';
+                    echo implode('<br>', array_map(function ($edu) {
+                        return htmlspecialchars((string)$edu);
+                    }, $education));
                 } else {
-                    echo '<p>' . htmlspecialchars($lang['no_education']) . '</p>';
+                    echo htmlspecialchars($lang['no_education']);
                 }
                 ?>
-                <p><strong><?= htmlspecialchars($lang['yearwork']) ?>:</strong> <?= htmlspecialchars($lang['from_year']) ?> <?= htmlspecialchars($teacher['works_in_college']) ?></p>
-                <p><strong><?= htmlspecialchars($lang['work']) ?>:</strong> <?= htmlspecialchars($teacher['position']) ?></p>
-                <button class="museum-btn" type="button" data-teacher-id="<?= (int)$teacher['id'] ?>" id="openModal<?= (int)$teacher['id'] ?>">
-                    <?= htmlspecialchars($lang['lookachteacher']) ?>
-                </button>
-            </div>
+            </p>
         </div>
+        <button class="museum-btn teacher-card__btn" type="button" data-teacher-id="<?= (int)$teacher['id'] ?>" id="openModal<?= (int)$teacher['id'] ?>">
+            <?= htmlspecialchars($lang['lookachteacher']) ?>
+        </button>
     </article>
 
     <div class="museum-modal" id="achievementsModal<?= (int)$teacher['id'] ?>" onclick="if(event.target===this)this.classList.remove('active')">
@@ -72,6 +77,7 @@ $museum_page_title = $lang['teachers_list'];
         </div>
     </div>
 <?php endwhile; ?>
+</div>
 
 <script>
     document.querySelectorAll('[id^="openModal"]').forEach(function (button) {

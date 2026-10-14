@@ -86,4 +86,7 @@ $lang = [
     'views' => 'Views',
     'project_description' => 'Project description',
     'teachers_list' => 'College teachers',
+    'specialty_qualifications' => 'Qualifications',
+    'specialty_study' => 'Study',
+    'specialty_demand' => 'Demand',
 ];
