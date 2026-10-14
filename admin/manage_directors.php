@@ -17,7 +17,6 @@ if (isset($_SESSION['message'])):
     </div>
     <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
 <?php endif;
-$language = $_SESSION['lang']; // Получаем выбранный язык
 // Получаем список всех директоров
 $query = "SELECT * FROM directors";
 $result = mysqli_query($conn, $query);
