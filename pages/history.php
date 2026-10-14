@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
 
 $is_logged_in = isset($_SESSION['user_id']);
-$result = mysqli_query($conn, "SELECT * FROM history ORDER BY created_at DESC");
+$result = mysqli_query($conn, "SELECT * FROM history ORDER BY created_at ASC, id ASC");
 
 if (isset($_GET['delete_id']) && $is_logged_in) {
     $delete_id = (int)$_GET['delete_id'];
