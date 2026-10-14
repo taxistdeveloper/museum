@@ -2,7 +2,19 @@
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
 
-$result_students = mysqli_query($conn, "SELECT * FROM students ORDER BY LOWER(name) ASC");
+$result_students = mysqli_query($conn, "
+    SELECT * FROM students
+    ORDER BY
+        CASE
+            WHEN image IS NULL
+              OR TRIM(image) = ''
+              OR image IN ('empty_profile.png', 'blank-profile-picture-973460_1280.png')
+            THEN 1
+            ELSE 0
+        END ASC,
+        created_at DESC,
+        id DESC
+");
 $museum_page_title = $lang['Ourstudent'];
 ?>
 <!DOCTYPE html>
