@@ -8,37 +8,73 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Получаем данные из формы
-    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $name = trim((string)($_POST['name'] ?? ''));
+    $group = trim((string)($_POST['group'] ?? ''));
+    $achievements = $_POST['achievements'] ?? [];
+    if (!is_array($achievements)) {
+        $achievements = [];
+    }
+    $achievements = array_values(array_filter(array_map(static function ($item) {
+        return trim((string)$item);
+    }, $achievements), static function ($item) {
+        return $item !== '';
+    }));
+    $achievements_json = json_encode($achievements, JSON_UNESCAPED_UNICODE);
 
-    $group = mysqli_real_escape_string($conn, $_POST['group']);
+    $upload_dir = __DIR__ . '/uploads/';
+    $image_name = '';
 
+    if ($name === '' || $group === '') {
+        $error = 'Укажите имя и группу.';
+    } elseif (!is_dir($upload_dir) && !mkdir($upload_dir, 0775, true)) {
+        $error = 'Не удалось создать папку для фото.';
+    } else {
+        $file = $_FILES['image'] ?? [];
+        $upload_error = $file['error'] ?? UPLOAD_ERR_NO_FILE;
+        $tmp = $file['tmp_name'] ?? '';
 
-    // Обработка дополнительной информации (массив)
-    $achievements = $_POST['achievements'];
-    $achievements_json = json_encode($achievements, JSON_UNESCAPED_UNICODE);  // Преобразуем массив в строку JSON
+        if ($upload_error !== UPLOAD_ERR_OK || !is_uploaded_file($tmp)) {
+            $error = 'Не удалось загрузить файл. Код ошибки: ' . (int)$upload_error . '.';
+        } else {
+            $mime = (new finfo(FILEINFO_MIME_TYPE))->file($tmp);
+            $ext_map = [
+                'image/jpeg' => 'jpg',
+                'image/png' => 'png',
+                'image/gif' => 'gif',
+                'image/webp' => 'webp',
+            ];
 
-    // Обработка изображения
-    $image = $_FILES['image']['name'];
-    $image_tmp = $_FILES['image']['tmp_name'];
-    $image_path = __DIR__ . '/uploads/' . $image;
-
-    // Перемещаем файл в папку для загрузки
-    if (!move_uploaded_file($image_tmp, $image_path)) {
-        echo "<h2 class='has-text-centered'>Ошибка загрузки файла</h2>";
-        exit;
+            if (!isset($ext_map[$mime])) {
+                $error = 'Недопустимый тип файла. Разрешены JPG, PNG, GIF и WEBP.';
+            } else {
+                $image_name = bin2hex(random_bytes(16)) . '.' . $ext_map[$mime];
+                if (!move_uploaded_file($tmp, $upload_dir . $image_name)) {
+                    $reason = error_get_last()['message'] ?? 'нет прав на запись в папку uploads';
+                    $error = 'Не удалось сохранить файл. ' . $reason;
+                    $image_name = '';
+                }
+            }
+        }
     }
 
-    // Запрос для добавления нового студента
-    $query_add_student = "INSERT INTO students (name,  group_name,  achievements, image, created_at) 
-                          VALUES ('$name',  '$group',  '$achievements_json', '$image', NOW())";
-
-    if (mysqli_query($conn, $query_add_student)) {
-        echo "<h2 class='has-text-centered'>Студент добавлен успешно!</h2>";
-        echo "<a href='../manage_students.php' class='btn btn-primary'>Перейти к списку студентов</a>";
-    } else {
-        echo "<h2 class='has-text-centered'>Ошибка добавления студента</h2>";
+    if ($error === '' && $image_name !== '') {
+        try {
+            $stmt = mysqli_prepare(
+                $conn,
+                "INSERT INTO students (name, group_name, achievements, image, created_at) VALUES (?, ?, ?, ?, NOW())"
+            );
+            mysqli_stmt_bind_param($stmt, 'ssss', $name, $group, $achievements_json, $image_name);
+            mysqli_stmt_execute($stmt);
+            $_SESSION['message'] = 'Студент добавлен успешно!';
+            header('Location: ../manage_students.php');
+            exit;
+        } catch (mysqli_sql_exception $e) {
+            @unlink($upload_dir . $image_name);
+            $error = 'Ошибка добавления студента: ' . $e->getMessage();
+        }
     }
 }
 ?>
@@ -78,6 +114,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>Имя, группа и фото.</p>
             </div>
         </header>
+
+        <?php if ($error !== ''): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
 
         <form action="add_student.php" method="POST" enctype="multipart/form-data" class="card card-body">
             <div class="mb-3">

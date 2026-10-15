@@ -29,46 +29,65 @@ $student = mysqli_fetch_assoc($result_student);
 
 // Обработка формы
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $name = trim((string)($_POST['name'] ?? ''));
+    $group = trim((string)($_POST['group'] ?? ''));
 
-    $group = mysqli_real_escape_string($conn, $_POST['group']);
-
-
-    // Обработка достижений (массив)
-    $achievements = $_POST['achievements'];
+    $achievements = $_POST['achievements'] ?? [];
+    if (!is_array($achievements)) {
+        $achievements = [];
+    }
     $achievements_json = json_encode($achievements, JSON_UNESCAPED_UNICODE);
 
     // Обработка нового изображения (если загружено)
     if (!empty($_FILES['image']['name'])) {
-        $image = $_FILES['image']['name'];
-        $image_tmp = $_FILES['image']['tmp_name'];
-        $image_path = __DIR__ . '/uploads/' . $image;
+        $upload_dir = __DIR__ . '/uploads/';
+        $upload_error = $_FILES['image']['error'] ?? UPLOAD_ERR_NO_FILE;
+        $image_tmp = $_FILES['image']['tmp_name'] ?? '';
 
-        if (!move_uploaded_file($image_tmp, $image_path)) {
-            echo "<h2 class='has-text-centered'>Ошибка загрузки файла</h2>";
+        if (!is_dir($upload_dir) && !mkdir($upload_dir, 0775, true)) {
+            echo "<h2 class='has-text-centered'>Не удалось создать папку для фото</h2>";
+            exit();
+        }
+
+        if ($upload_error !== UPLOAD_ERR_OK || !is_uploaded_file($image_tmp)) {
+            echo "<h2 class='has-text-centered'>Ошибка загрузки файла. Код: " . (int)$upload_error . "</h2>";
+            exit();
+        }
+
+        $mime = (new finfo(FILEINFO_MIME_TYPE))->file($image_tmp);
+        $ext_map = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp',
+        ];
+        if (!isset($ext_map[$mime])) {
+            echo "<h2 class='has-text-centered'>Недопустимый тип файла. Разрешены JPG, PNG, GIF и WEBP.</h2>";
+            exit();
+        }
+
+        $image = bin2hex(random_bytes(16)) . '.' . $ext_map[$mime];
+        if (!move_uploaded_file($image_tmp, $upload_dir . $image)) {
+            $reason = error_get_last()['message'] ?? 'нет прав на запись в папку uploads';
+            echo "<h2 class='has-text-centered'>Не удалось сохранить файл. " . htmlspecialchars($reason) . "</h2>";
             exit();
         }
     } else {
         $image = $student['image']; // Если новое изображение не загружено, оставить старое
     }
 
-    // Обновляем данные студента
-    $query_update = "UPDATE students SET 
-                     name = '$name', 
-                    
-                     group_name = '$group', 
-                    
-                     achievements = '$achievements_json', 
-                     image = '$image', 
-                     updated_at = NOW() 
-                     WHERE id = '$id'";
-
-    if (mysqli_query($conn, $query_update)) {
+    try {
+        $stmt = mysqli_prepare(
+            $conn,
+            "UPDATE students SET name = ?, group_name = ?, achievements = ?, image = ?, updated_at = NOW() WHERE id = ?"
+        );
+        mysqli_stmt_bind_param($stmt, 'ssssi', $name, $group, $achievements_json, $image, $id);
+        mysqli_stmt_execute($stmt);
         echo "<h2 class='has-text-centered'>Данные студента обновлены успешно!</h2>";
         echo "<a href='../manage_students.php' class='btn btn-primary'>Вернуться к списку студентов</a>";
         exit();
-    } else {
-        echo "<h2 class='has-text-centered'>Ошибка обновления данных</h2>";
+    } catch (mysqli_sql_exception $e) {
+        echo "<h2 class='has-text-centered'>Ошибка обновления данных: " . htmlspecialchars($e->getMessage()) . "</h2>";
     }
 }
 ?>

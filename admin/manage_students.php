@@ -49,6 +49,10 @@ $result_students = mysqli_query($conn, $query_students);
             <a class="btn btn-primary" href="students/add_student.php">Добавить</a>
         </header>
 
+        <?php if (!empty($_SESSION['message'])): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($_SESSION['message']) ?></div>
+            <?php unset($_SESSION['message']); ?>
+        <?php endif; ?>
 
         <table class="table table-striped table-hover">
             <thead>

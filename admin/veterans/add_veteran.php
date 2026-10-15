@@ -11,31 +11,50 @@ if (!$conn) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $biography = mysqli_real_escape_string($conn, $_POST['biography']);
-    $photo = $_FILES['photo']['name'];
-    $target_dir = "assets/images/";
-    $target_file = $target_dir . basename($_FILES["photo"]["name"]);
+    $target_dir = __DIR__ . '/assets/images/';
+    $tmp = $_FILES['photo']['tmp_name'] ?? '';
+    $upload_error = $_FILES['photo']['error'] ?? UPLOAD_ERR_NO_FILE;
 
-    if ($_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
-        $_SESSION['message'] = 'Ошибка загрузки файла: ' . $_FILES['photo']['error'];
+    if (!is_dir($target_dir) && !mkdir($target_dir, 0775, true)) {
+        $_SESSION['message'] = 'Не удалось создать папку для фото.';
         $_SESSION['message_type'] = 'error';
-    } elseif ($_FILES['photo']['size'] > 5 * 1024 * 1024) {
+    } elseif ($upload_error !== UPLOAD_ERR_OK || !is_uploaded_file($tmp)) {
+        $_SESSION['message'] = 'Ошибка загрузки файла: ' . $upload_error;
+        $_SESSION['message_type'] = 'error';
+    } elseif (($_FILES['photo']['size'] ?? 0) > 5 * 1024 * 1024) {
         $_SESSION['message'] = 'Файл слишком большой. Максимальный размер: 5 MB.';
         $_SESSION['message_type'] = 'error';
-    } elseif (!in_array($_FILES['photo']['type'], ['image/jpeg', 'image/png', 'image/gif'])) {
-        $_SESSION['message'] = 'Недопустимый тип файла. Разрешены только JPG, PNG, GIF.';
-        $_SESSION['message_type'] = 'error';
-    } elseif (!move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
-        $_SESSION['message'] = 'Не удалось сохранить файл в: ' . $target_file;
-        $_SESSION['message_type'] = 'error';
     } else {
-        // Если всё прошло успешно, добавляем запись в базу
-        $query = "INSERT INTO veterans (name, biography, photo, name_ru, biography_ru) VALUES ('$name', '$biography', '$photo', '$name', '$biography')";
-        if (mysqli_query($conn, $query)) {
-            $_SESSION['message'] = 'Ветеран добавлен успешно!';
-            $_SESSION['message_type'] = 'success';
-        } else {
-            $_SESSION['message'] = 'Ошибка при добавлении ветерана: ' . mysqli_error($conn);
+        $mime = (new finfo(FILEINFO_MIME_TYPE))->file($tmp);
+        $ext_map = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp',
+        ];
+
+        if (!isset($ext_map[$mime])) {
+            $_SESSION['message'] = 'Недопустимый тип файла. Разрешены только JPG, PNG, GIF, WEBP.';
             $_SESSION['message_type'] = 'error';
+        } else {
+            $photo = bin2hex(random_bytes(16)) . '.' . $ext_map[$mime];
+            $target_file = $target_dir . $photo;
+
+            if (!move_uploaded_file($tmp, $target_file)) {
+                $reason = error_get_last()['message'] ?? 'нет прав на запись в assets/images';
+                $_SESSION['message'] = 'Не удалось сохранить файл. ' . $reason;
+                $_SESSION['message_type'] = 'error';
+            } else {
+                $query = "INSERT INTO veterans (name, biography, photo, name_ru, biography_ru) VALUES ('$name', '$biography', '$photo', '$name', '$biography')";
+                if (mysqli_query($conn, $query)) {
+                    $_SESSION['message'] = 'Ветеран добавлен успешно!';
+                    $_SESSION['message_type'] = 'success';
+                } else {
+                    unlink($target_file);
+                    $_SESSION['message'] = 'Ошибка при добавлении ветерана: ' . mysqli_error($conn);
+                    $_SESSION['message_type'] = 'error';
+                }
+            }
         }
     }
 

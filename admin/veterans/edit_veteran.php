@@ -44,18 +44,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Если новое фото загружено
     if (!empty($_FILES['photo']['name'])) {
-        $target_dir = "assets/images/";
+        $target_dir = __DIR__ . '/assets/images/';
 
-        // Создаем папку, если её нет
-        if (!is_dir($target_dir)) {
-            mkdir($target_dir, 0775, true);
+        if (!is_dir($target_dir) && !mkdir($target_dir, 0775, true)) {
+            $_SESSION['message'] = 'Не удалось создать папку для фото.';
+            $_SESSION['message_type'] = 'error';
+            header('Location: ?id=' . $veteran_id . '&lang=' . rawurlencode($lang));
+            exit;
         }
 
-        // Генерируем уникальное имя файла
-        $photo = time() . "_" . basename($_FILES["photo"]["name"]);
-        $target_file = $target_dir . $photo;
-
-        // Проверяем ошибки загрузки
         if ($_FILES["photo"]["error"] !== UPLOAD_ERR_OK) {
             $_SESSION['message'] = 'Ошибка загрузки: ' . $_FILES["photo"]["error"];
             $_SESSION['message_type'] = 'error';
@@ -63,9 +60,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit;
         }
 
-        // Перемещаем файл в папку
+        $mime = (new finfo(FILEINFO_MIME_TYPE))->file($_FILES["photo"]["tmp_name"]);
+        $ext_map = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp',
+        ];
+        if (!isset($ext_map[$mime])) {
+            $_SESSION['message'] = 'Недопустимый тип файла. Разрешены JPG, PNG, GIF, WEBP.';
+            $_SESSION['message_type'] = 'error';
+            header('Location: ?id=' . $veteran_id . '&lang=' . rawurlencode($lang));
+            exit;
+        }
+
+        $photo = bin2hex(random_bytes(16)) . '.' . $ext_map[$mime];
+        $target_file = $target_dir . $photo;
+
         if (!move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
-            $_SESSION['message'] = 'Ошибка при сохранении файла!';
+            $reason = error_get_last()['message'] ?? 'нет прав на запись в assets/images';
+            $_SESSION['message'] = 'Не удалось сохранить файл. ' . $reason;
             $_SESSION['message_type'] = 'error';
             header('Location: ?id=' . $veteran_id . '&lang=' . rawurlencode($lang));
             exit;
