@@ -2,6 +2,7 @@
 session_start();  // Начинаем сессию для передачи сообщений
 
 require '../../config.php';
+require_once __DIR__ . '/../../includes/veteran_photo.php';
 
 // Проверяем соединение с базой данных
 if (!$conn) {
@@ -11,12 +12,12 @@ if (!$conn) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $biography = mysqli_real_escape_string($conn, $_POST['biography']);
-    $target_dir = __DIR__ . '/assets/images/';
+    $target_dir = veteran_photo_save_dir();
     $tmp = $_FILES['photo']['tmp_name'] ?? '';
     $upload_error = $_FILES['photo']['error'] ?? UPLOAD_ERR_NO_FILE;
 
-    if (!is_dir($target_dir) && !mkdir($target_dir, 0775, true)) {
-        $_SESSION['message'] = 'Не удалось создать папку для фото.';
+    if ($target_dir === null) {
+        $_SESSION['message'] = 'Папка для фото недоступна для записи.';
         $_SESSION['message_type'] = 'error';
     } elseif ($upload_error !== UPLOAD_ERR_OK || !is_uploaded_file($tmp)) {
         $_SESSION['message'] = 'Ошибка загрузки файла: ' . $upload_error;
@@ -38,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['message_type'] = 'error';
         } else {
             $photo = bin2hex(random_bytes(16)) . '.' . $ext_map[$mime];
-            $target_file = $target_dir . $photo;
+            $target_file = $target_dir . '/' . $photo;
 
             if (!move_uploaded_file($tmp, $target_file)) {
                 $reason = error_get_last()['message'] ?? 'нет прав на запись в assets/images';

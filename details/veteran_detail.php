@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../includes/veteran_photo.php';
 
 $veteran_id = (int)($_GET['id'] ?? 0);
 $stmt = mysqli_prepare($conn, "SELECT * FROM veterans WHERE id = ?");
@@ -27,7 +28,7 @@ $museum_back_href = '../pages/veteran.php?lang=' . urlencode($language);
 <?php include __DIR__ . '/../includes/header.php'; ?>
 
 <article class="person-card" style="max-width:720px;margin:0 auto;padding:2rem;">
-    <img src="../admin/veterans/assets/images/<?= htmlspecialchars($veteran['photo']) ?>"
+    <img src="<?= htmlspecialchars(veteran_photo_src((string)($veteran['photo'] ?? ''))) ?>"
          alt="<?= htmlspecialchars($name) ?>"
          style="width:220px;height:220px;border-radius:50%;object-fit:cover;border:4px solid var(--primary);">
     <h1><?= htmlspecialchars($name) ?></h1>
@@ -43,7 +44,7 @@ $museum_back_href = '../pages/veteran.php?lang=' . urlencode($language);
     <h2 class="museum-title"><?= htmlspecialchars($lang['gallery']) ?></h2>
     <div class="gallery-grid">
         <?php foreach ($gallery as $img): ?>
-            <img src="../admin/veterans/assets/images/<?= htmlspecialchars(trim($img)) ?>"
+            <img src="<?= htmlspecialchars(veteran_photo_src(trim($img))) ?>"
                  alt="<?= htmlspecialchars($name) ?>"
                  loading="lazy"
                  style="width:100%;height:180px;object-fit:cover;border-radius:12px;cursor:pointer;"

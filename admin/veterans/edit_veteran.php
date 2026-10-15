@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../../config.php';
+require_once __DIR__ . '/../../includes/veteran_photo.php';
 
 if (!$conn) {
     die("Ошибка подключения к базе данных: " . mysqli_connect_error());
@@ -44,10 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Если новое фото загружено
     if (!empty($_FILES['photo']['name'])) {
-        $target_dir = __DIR__ . '/assets/images/';
+        $target_dir = veteran_photo_save_dir();
 
-        if (!is_dir($target_dir) && !mkdir($target_dir, 0775, true)) {
-            $_SESSION['message'] = 'Не удалось создать папку для фото.';
+        if ($target_dir === null) {
+            $_SESSION['message'] = 'Папка для фото недоступна для записи.';
             $_SESSION['message_type'] = 'error';
             header('Location: ?id=' . $veteran_id . '&lang=' . rawurlencode($lang));
             exit;
@@ -75,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         $photo = bin2hex(random_bytes(16)) . '.' . $ext_map[$mime];
-        $target_file = $target_dir . $photo;
+        $target_file = $target_dir . '/' . $photo;
 
         if (!move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
             $reason = error_get_last()['message'] ?? 'нет прав на запись в assets/images';

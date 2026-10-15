@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../includes/veteran_photo.php';
 
 $col = in_array($db_lang, ['ru', 'kz', 'en'], true) ? $db_lang : 'ru';
 $result_veterans = mysqli_query($conn, "SELECT * FROM veterans ORDER BY LOWER(COALESCE(name_$col, name_ru)) ASC");
@@ -18,7 +19,7 @@ $name_key = 'name_' . $col;
 <div class="person-grid">
     <?php while ($veteran = mysqli_fetch_assoc($result_veterans)): ?>
         <article class="person-card">
-            <img src="../admin/veterans/assets/images/<?= htmlspecialchars($veteran['photo']) ?>"
+            <img src="<?= htmlspecialchars(veteran_photo_src((string)($veteran['photo'] ?? ''))) ?>"
                  alt="<?= htmlspecialchars($veteran[$name_key] ?? $veteran['name_ru']) ?>"
                  loading="lazy">
             <h3><?= htmlspecialchars($veteran[$name_key] ?? $veteran['name_ru']) ?></h3>
