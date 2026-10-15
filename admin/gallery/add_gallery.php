@@ -8,14 +8,18 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 require '../../config.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = htmlspecialchars($_POST['description']);
-    $targetDir = "uploads/";
+    $targetDir = museum_upload_dir('gallery');
     $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
     $uploadedFiles = [];
 
-    if (!empty($_FILES['images']['name'][0]) && !empty($description)) {
+    if ($targetDir === null) {
+        $errorMsg = 'Папка для фото недоступна для записи.';
+    } elseif (!empty($_FILES['images']['name'][0]) && !empty($description)) {
+        $targetDir = rtrim($targetDir, '/') . '/';
         foreach ($_FILES['images']['name'] as $key => $fileName) {
             $fileTmpPath = $_FILES['images']['tmp_name'][$key];
             $fileType = pathinfo($fileName, PATHINFO_EXTENSION);

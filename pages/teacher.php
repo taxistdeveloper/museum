@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
 $query_teachers = "
     SELECT t.*,
@@ -23,7 +24,7 @@ $museum_page_title = $lang['teachers_list'];
 <?php while ($teacher = mysqli_fetch_assoc($result_teachers)): ?>
     <article class="teacher-card">
         <img class="teacher-card__img"
-             src="../admin/teachers/uploads/<?= htmlspecialchars($teacher['image']) ?>"
+             src="<?= htmlspecialchars(museum_upload_src('teachers', (string)$teacher['image'])) ?>"
              alt="<?= htmlspecialchars($teacher['localized_name']) ?>"
              loading="lazy">
         <h3 class="teacher-card__name"><?= htmlspecialchars($teacher['localized_name']) ?></h3>

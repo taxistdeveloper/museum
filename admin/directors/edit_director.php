@@ -6,6 +6,7 @@ if (!isset($_SESSION['user_id'])) {
     exit(); // Завершаем выполнение скрипта
 }
 require '../../config.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 // Проверяем соединение с базой данных
 if (!$conn) {
@@ -32,7 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Обработка основного фото
     $photo = $_FILES['photo']['name'] ? $_FILES['photo']['name'] : $director['photo'];  // Если новое фото не выбрано, сохраняем старое
-    $target_dir = "assets/images/";
+    $target_dir = museum_upload_dir('directors');
+    if ($target_dir === null) {
+        echo "Папка для фото недоступна для записи.<br>";
+        exit;
+    }
+    $target_dir .= '/';
     $target_file = $target_dir . basename($_FILES["photo"]["name"]);
 
     if ($_FILES['photo']['name'] && !move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
@@ -143,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input class="form-control" type="file" name="photo" accept="image/*">
                 <?php if (!empty($director['photo'])): ?>
                     <p class="form-hint">Текущее фото</p>
-                    <img class="form-preview" src="assets/images/<?= htmlspecialchars($director['photo']) ?>" alt="Фото директора">
+                    <img class="form-preview" src="<?= htmlspecialchars(museum_upload_src('directors', (string)$director['photo'])) ?>" alt="Фото директора">
                 <?php endif; ?>
             </div>
 
@@ -155,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="form-previews">
                         <?php foreach (explode(',', $director['gallery']) as $gallery_image): ?>
                             <?php if (trim($gallery_image) === '') continue; ?>
-                            <img class="form-preview" src="assets/images/<?= htmlspecialchars(trim($gallery_image)) ?>" alt="">
+                            <img class="form-preview" src="<?= htmlspecialchars(museum_upload_src('directors', trim($gallery_image))) ?>" alt="">
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>

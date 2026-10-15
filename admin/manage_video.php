@@ -1,10 +1,9 @@
 <?php
 session_start();
 include '../config.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
-$upload_dir = __DIR__ . '/uploads/videos/';
-$public_upload_dir = '/admin/uploads/videos/';
-if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+$upload_dir = museum_upload_dir('videos');
 
 // Добавление видео
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_video'])) {
@@ -16,11 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_video'])) {
 
     if (!empty($_FILES['video_file']['name'])) {
         $file_name = time() . '_' . preg_replace('/\s+/', '_', basename($_FILES['video_file']['name']));
-        $target_file = $upload_dir . $file_name;
         $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
         $allowed = ['mp4', 'mov', 'avi', 'mkv'];
-        if (in_array($ext, $allowed) && move_uploaded_file($_FILES['video_file']['tmp_name'], $target_file)) {
-            $file_path = $public_upload_dir . $file_name;
+        if ($upload_dir && in_array($ext, $allowed) && move_uploaded_file($_FILES['video_file']['tmp_name'], $upload_dir . '/' . $file_name)) {
+            $file_path = museum_upload_public($upload_dir, 'videos', $file_name);
         }
     }
 
@@ -39,8 +37,8 @@ if (isset($_GET['delete'])) {
     $result = $conn->query("SELECT file_path FROM videos WHERE id = $id");
     $row = $result->fetch_assoc();
     if ($row && $row['file_path']) {
-        $real = __DIR__ . $row['file_path'];
-        if (file_exists($real)) unlink($real);
+        $real = museum_upload_abs('videos', basename($row['file_path']));
+        if ($real) unlink($real);
     }
     $conn->query("DELETE FROM videos WHERE id = $id");
     $_SESSION['message'] = 'Видео удалено!';

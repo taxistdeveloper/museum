@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../config.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
 // Проверяем, если сессия не установлена, перенаправляем на страницу авторизации
 if (!isset($_SESSION['user_id'])) {
@@ -76,7 +77,7 @@ $result_students = mysqli_query($conn, $query_students);
                             <td><?= htmlspecialchars($row['group_name']) ?></td>
 
                             <td>
-                                <img src="./students/uploads/<?= htmlspecialchars($row['image']) ?>" alt="Фото" style="width: 50px; height: 50px;">
+                                <img src="<?= htmlspecialchars(museum_upload_src('students', (string)$row['image'])) ?>" alt="Фото" style="width: 50px; height: 50px;">
                             </td>
                             <td>
                                 <a href="../admin/students/edit_student.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-info">Редактировать</a>

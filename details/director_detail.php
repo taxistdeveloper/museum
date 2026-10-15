@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
 $director_id = (int)($_GET['id'] ?? 0);
 $stmt = mysqli_prepare($conn, "SELECT * FROM directors WHERE id = ?");
@@ -28,7 +29,7 @@ $museum_back_href = '../pages/directors.php?lang=' . urlencode($language);
 
 <article class="profile-card">
     <div class="profile-card__row">
-        <img src="../admin/directors/assets/images/<?= htmlspecialchars($director['photo']) ?>"
+        <img src="<?= htmlspecialchars(museum_upload_src('directors', (string)$director['photo'])) ?>"
              alt="<?= htmlspecialchars($name) ?>"
              style="width:220px;height:220px;object-fit:cover;border-radius:12px;">
         <div>
@@ -49,7 +50,7 @@ $museum_back_href = '../pages/directors.php?lang=' . urlencode($language);
     <h2 class="museum-title"><?= htmlspecialchars($lang['gallery']) ?></h2>
     <div class="gallery-grid">
         <?php foreach ($gallery as $image): ?>
-            <img src="../admin/directors/assets/images/<?= htmlspecialchars(trim($image)) ?>"
+            <img src="<?= htmlspecialchars(museum_upload_src('directors', trim($image))) ?>"
                  alt="<?= htmlspecialchars($name) ?>"
                  loading="lazy"
                  style="width:100%;height:220px;object-fit:cover;border-radius:12px;">

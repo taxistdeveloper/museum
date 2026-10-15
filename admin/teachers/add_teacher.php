@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../../config.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 // Проверяем авторизацию
 if (!isset($_SESSION['user_id'])) {
@@ -21,8 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Обработка изображения
     $image = '';
     if (!empty($_FILES['image']['name'])) {
+        $upload_dir = museum_upload_dir('teachers');
         $image = basename($_FILES['image']['name']);
-        move_uploaded_file($_FILES['image']['tmp_name'], "uploads/" . $image);
+        if ($upload_dir === null || !move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir . '/' . $image)) {
+            $_SESSION['message'] = 'Не удалось сохранить фото.';
+            $_SESSION['message_type'] = 'error';
+            header("Location: add_teacher.php?lang=$lang");
+            exit();
+        }
     }
 
     // Вставка в таблицу teachers

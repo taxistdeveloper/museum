@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
 $result_gallery = mysqli_query($conn, "SELECT * FROM gallery ORDER BY created_at DESC");
 if (!$result_gallery) {
@@ -25,8 +26,8 @@ $museum_back_href = 'gallery_video.php?lang=' . urlencode($language);
             <?php
             $caption = preg_replace('/^[\s\x{00A0}\x{2800}]+|[\s\x{00A0}\x{2800}]+$/u', '', (string)$row['description']);
             ?>
-            <button type="button" class="gallery-tile" onclick="openModal('<?= htmlspecialchars($row['file_name'], ENT_QUOTES) ?>', '<?= htmlspecialchars($caption, ENT_QUOTES) ?>')">
-                <img src="../admin/gallery/uploads/<?= htmlspecialchars($row['file_name']) ?>"
+            <button type="button" class="gallery-tile" onclick="openModal('<?= htmlspecialchars(museum_upload_src('gallery', (string)$row['file_name']), ENT_QUOTES) ?>', '<?= htmlspecialchars($caption, ENT_QUOTES) ?>')">
+                <img src="<?= htmlspecialchars(museum_upload_src('gallery', (string)$row['file_name'])) ?>"
                      alt="<?= htmlspecialchars($caption !== '' ? $caption : $lang['photo']) ?>"
                      loading="lazy">
                 <?php if ($caption !== ''): ?>
@@ -50,7 +51,7 @@ $museum_back_href = 'gallery_video.php?lang=' . urlencode($language);
 
 <script>
     function openModal(image, desc) {
-        document.getElementById('modal-image').src = '../admin/gallery/uploads/' + image;
+        document.getElementById('modal-image').src = image;
         document.getElementById('modal-desc').textContent = desc;
         document.getElementById('modal').classList.add('active');
     }

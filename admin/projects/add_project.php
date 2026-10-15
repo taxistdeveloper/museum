@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 require '../../config.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 // Устанавливаем кодировку соединения
 mysqli_set_charset($conn, 'utf8mb4');
@@ -22,13 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $description = mysqli_real_escape_string($conn, $_POST['description']);
 
-    // Папка для загрузки изображений
-    $target_dir = "assets/projects/";
-
-    // Проверяем, существует ли папка для изображений, если нет - создаём
-    if (!is_dir($target_dir)) {
-        mkdir($target_dir, 0777, true);  // Создаем папку с правами 0777
+    $target_dir = museum_upload_dir('projects');
+    if ($target_dir === null) {
+        echo "Папка для фото недоступна для записи.<br>";
+        exit;
     }
+    $target_dir .= '/';
 
     // Загружаем основное изображение проекта
     $main_image = $_FILES['main_image']['name'];

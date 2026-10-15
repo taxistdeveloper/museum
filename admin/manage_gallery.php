@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 require '../config.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
 // Запрос для получения всех изображений
 $query_gallery = "SELECT * FROM gallery ORDER BY created_at DESC";
@@ -46,7 +47,7 @@ $result_gallery = mysqli_query($conn, $query_gallery);
                 <div class="col-md-3 gallery-item">
                     <div class="card">
                         <div class="card-image">
-                            <img src="../admin/gallery/uploads/<?= htmlspecialchars($row['file_name']) ?>" alt="Фото" class="gallery-image">
+                            <img src="<?= htmlspecialchars(museum_upload_src('gallery', (string)$row['file_name'])) ?>" alt="Фото" class="gallery-image">
                         </div>
                         <div class="card-body">
                             <p class="text-muted"><?= htmlspecialchars(htmlspecialchars_decode((string) $row['description'])) ?></p>

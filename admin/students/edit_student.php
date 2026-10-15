@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../../config.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 // Проверяем, если сессия не установлена, перенаправляем на страницу авторизации
 if (!isset($_SESSION['user_id'])) {
@@ -40,12 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Обработка нового изображения (если загружено)
     if (!empty($_FILES['image']['name'])) {
-        $upload_dir = __DIR__ . '/uploads/';
+        $upload_dir = museum_upload_dir('students');
         $upload_error = $_FILES['image']['error'] ?? UPLOAD_ERR_NO_FILE;
         $image_tmp = $_FILES['image']['tmp_name'] ?? '';
 
-        if (!is_dir($upload_dir) && !mkdir($upload_dir, 0775, true)) {
-            echo "<h2 class='has-text-centered'>Не удалось создать папку для фото</h2>";
+        if ($upload_dir === null) {
+            echo "<h2 class='has-text-centered'>Папка для фото недоступна для записи</h2>";
             exit();
         }
 
@@ -67,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $image = bin2hex(random_bytes(16)) . '.' . $ext_map[$mime];
-        if (!move_uploaded_file($image_tmp, $upload_dir . $image)) {
+        if (!move_uploaded_file($image_tmp, $upload_dir . '/' . $image)) {
             $reason = error_get_last()['message'] ?? 'нет прав на запись в папку uploads';
             echo "<h2 class='has-text-centered'>Не удалось сохранить файл. " . htmlspecialchars($reason) . "</h2>";
             exit();
@@ -158,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label class="form-label">Фото студента</label>
                 <input class="form-control" type="file" name="image" accept="image/*">
                     <p class="form-text">Если вы не загрузите новое изображение, останется текущее.</p>
-                    <img src="uploads/<?= htmlspecialchars($student['image']) ?>" alt="Фото" style="width: 100px; height: 100px;">
+                    <img src="<?= htmlspecialchars(museum_upload_src('students', (string)$student['image'])) ?>" alt="Фото" style="width: 100px; height: 100px;">
                 </div>
 
             <div class="mb-3">

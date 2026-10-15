@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
 $result_directors = mysqli_query($conn, "SELECT * FROM directors ORDER BY created_at DESC");
 $museum_page_title = $lang['directors'];
@@ -17,7 +18,7 @@ $museum_back_href = 'historyName.php?lang=' . urlencode($language);
 <div class="person-grid">
     <?php while ($director = mysqli_fetch_assoc($result_directors)): ?>
         <article class="person-card">
-            <img src="../admin/directors/assets/images/<?= htmlspecialchars($director['photo']) ?>"
+            <img src="<?= htmlspecialchars(museum_upload_src('directors', (string)$director['photo'])) ?>"
                  alt="<?= htmlspecialchars($director['name'] ?? $director['name_ru'] ?? '') ?>"
                  loading="lazy">
             <h3><?= htmlspecialchars($director['name'] ?? $director['name_ru'] ?? '') ?></h3>

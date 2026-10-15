@@ -6,6 +6,7 @@ if (!isset($_SESSION['user_id'])) {
     exit(); // Завершаем выполнение скрипта
 }
 require '../../config.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 // Проверяем соединение с базой данных
 if (!$conn) {
@@ -16,13 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $biography = mysqli_real_escape_string($conn, $_POST['biography']);
 
-    // Папка для загрузки изображений
-    $target_dir = "assets/images/";
-
-    // Проверяем, существует ли папка для изображений, если нет - создаём
-    if (!is_dir($target_dir)) {
-        mkdir($target_dir, 0777, true);  // Создаем папку с правами 0777
+    $target_dir = museum_upload_dir('directors');
+    if ($target_dir === null) {
+        echo "Папка для фото недоступна для записи.<br>";
+        exit;
     }
+    $target_dir .= '/';
 
     // Загружаем основное фото
     $photo = $_FILES['photo']['name'];

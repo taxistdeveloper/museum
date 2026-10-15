@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
 $project_id = (int)($_GET['id'] ?? 0);
 if ($project_id <= 0) {
@@ -46,7 +47,7 @@ $museum_back_href = '../pages/project.php?lang=' . urlencode($language);
         <div class="gallery-grid" style="margin-top: 1.5rem;">
             <?php foreach ($gallery as $index => $image): ?>
                 <img class="fullscreen-img"
-                     src="../admin/projects/assets/images/<?= rawurlencode($image) ?>"
+                     src="<?= htmlspecialchars(museum_upload_src('projects', (string)$image)) ?>"
                      data-index="<?= (int)$index ?>"
                      alt="<?= htmlspecialchars($name) ?>"
                      loading="lazy"

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
 $result_directors = mysqli_query($conn, "SELECT * FROM directors ORDER BY created_at DESC");
 $museum_page_title = $lang['directors'];
@@ -19,7 +20,7 @@ $name_key = 'name_' . $db_lang;
     <?php while ($director = mysqli_fetch_assoc($result_directors)): ?>
         <article class="person-card">
             <div class="image">
-                <img src="../admin/directors/assets/images/<?= htmlspecialchars($director['photo']) ?>"
+                <img src="<?= htmlspecialchars(museum_upload_src('directors', (string)$director['photo'])) ?>"
                      alt="<?= htmlspecialchars($director[$name_key] ?? $director['name_ru']) ?>"
                      loading="lazy">
             </div>

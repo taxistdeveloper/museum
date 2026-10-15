@@ -8,6 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 require '../../config.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 $id = intval($_GET['id']);
 
@@ -17,9 +18,8 @@ $result = mysqli_query($conn, $query);
 $image = mysqli_fetch_assoc($result);
 
 if ($image) {
-    $filePath = 'uploads/' . $image['file_name'];
-    // Удаляем файл
-    if (file_exists($filePath)) {
+    $filePath = museum_upload_abs('gallery', (string)$image['file_name']);
+    if ($filePath) {
         unlink($filePath);
     }
 

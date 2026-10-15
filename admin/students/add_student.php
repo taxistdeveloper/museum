@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../../config.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 // Проверяем, если сессия не установлена, перенаправляем на страницу авторизации
 if (!isset($_SESSION['user_id'])) {
@@ -24,13 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }));
     $achievements_json = json_encode($achievements, JSON_UNESCAPED_UNICODE);
 
-    $upload_dir = __DIR__ . '/uploads/';
+    $upload_dir = museum_upload_dir('students');
     $image_name = '';
 
     if ($name === '' || $group === '') {
         $error = 'Укажите имя и группу.';
-    } elseif (!is_dir($upload_dir) && !mkdir($upload_dir, 0775, true)) {
-        $error = 'Не удалось создать папку для фото.';
+    } elseif ($upload_dir === null) {
+        $error = 'Папка для фото недоступна для записи.';
     } else {
         $file = $_FILES['image'] ?? [];
         $upload_error = $file['error'] ?? UPLOAD_ERR_NO_FILE;
@@ -51,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Недопустимый тип файла. Разрешены JPG, PNG, GIF и WEBP.';
             } else {
                 $image_name = bin2hex(random_bytes(16)) . '.' . $ext_map[$mime];
-                if (!move_uploaded_file($tmp, $upload_dir . $image_name)) {
+                if (!move_uploaded_file($tmp, $upload_dir . '/' . $image_name)) {
                     $reason = error_get_last()['message'] ?? 'нет прав на запись в папку uploads';
                     $error = 'Не удалось сохранить файл. ' . $reason;
                     $image_name = '';
@@ -72,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ../manage_students.php');
             exit;
         } catch (mysqli_sql_exception $e) {
-            @unlink($upload_dir . $image_name);
+            @unlink($upload_dir . '/' . $image_name);
             $error = 'Ошибка добавления студента: ' . $e->getMessage();
         }
     }

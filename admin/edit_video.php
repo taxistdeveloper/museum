@@ -1,10 +1,9 @@
 <?php
 session_start();
 require '../config.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
-$upload_dir = __DIR__ . '/uploads/videos/';
-$public_upload_dir = '/admin/uploads/videos/';
-if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+$upload_dir = museum_upload_dir('videos');
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id <= 0) {
@@ -38,16 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Если загружен новый файл — заменяем
     if (!empty($_FILES['video_file']['name'])) {
         // Удаляем старый файл
-        if ($file_path && file_exists(__DIR__ . $file_path)) {
-            unlink(__DIR__ . $file_path);
+        $old_file = museum_upload_abs('videos', basename((string)$file_path));
+        if ($old_file) {
+            unlink($old_file);
         }
 
         $file_name = time() . '_' . preg_replace('/\s+/', '_', basename($_FILES['video_file']['name']));
-        $target_file = $upload_dir . $file_name;
         $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
         $allowed = ['mp4', 'mov', 'avi', 'mkv'];
-        if (in_array($ext, $allowed) && move_uploaded_file($_FILES['video_file']['tmp_name'], $target_file)) {
-            $file_path = $public_upload_dir . $file_name;
+        if ($upload_dir && in_array($ext, $allowed) && move_uploaded_file($_FILES['video_file']['tmp_name'], $upload_dir . '/' . $file_name)) {
+            $file_path = museum_upload_public($upload_dir, 'videos', $file_name);
         } else {
             $_SESSION['message'] = 'Ошибка загрузки файла.';
             header("Location: edit_video.php?id=$id");

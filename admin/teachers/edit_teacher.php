@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../../config.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 // Проверяем авторизацию
 if (!isset($_SESSION['user_id'])) {
@@ -43,8 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Обработка фото
     $image = $teacher['image'];
     if (!empty($_FILES['image']['name'])) {
+        $upload_dir = museum_upload_dir('teachers');
         $image = basename($_FILES['image']['name']);
-        move_uploaded_file($_FILES['image']['tmp_name'], "uploads/" . $image);
+        if ($upload_dir === null || !move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir . '/' . $image)) {
+            die('Не удалось сохранить фото.');
+        }
     }
 
     // Обновляем общие данные
@@ -170,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input class="form-control" type="file" name="image" accept="image/*">
                 </div>
                 <?php if (!empty($teacher['image'])): ?>
-                    <img src="uploads/<?= htmlspecialchars($teacher['image']) ?>" alt="Фото" class="mt-2" width="150">
+                    <img src="<?= htmlspecialchars(museum_upload_src('teachers', (string)$teacher['image'])) ?>" alt="Фото" class="mt-2" width="150">
                 <?php endif; ?>
 
             <div class="mb-3">

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
 $id = (int)($_GET['id'] ?? 0);
 $result = mysqli_query($conn, "SELECT * FROM students WHERE id = $id");
@@ -23,7 +24,7 @@ $museum_back_href = '../pages/student.php?lang=' . urlencode($language);
 <article class="profile-card">
     <div class="profile-card__row">
         <?php if (!empty($student['photo']) || !empty($student['image'])): ?>
-            <img src="../admin/students/uploads/<?= htmlspecialchars($student['image'] ?? $student['photo']) ?>"
+            <img src="<?= htmlspecialchars(museum_upload_src('students', (string)($student['image'] ?? $student['photo'] ?? ''))) ?>"
                  alt="<?= htmlspecialchars($student['name']) ?>">
         <?php endif; ?>
         <div>

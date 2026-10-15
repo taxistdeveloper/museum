@@ -8,6 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 include '../config.php';
+require_once __DIR__ . '/../includes/uploads.php';
 // Запрос для получения всех преподавателей
 $query_teachers = "SELECT * FROM teachers ORDER BY created_at DESC";
 $result_teachers = mysqli_query($conn, $query_teachers);
@@ -53,7 +54,7 @@ $result_teachers = mysqli_query($conn, $query_teachers);
                     <tr>
                         <!-- Отображение фотографии -->
                         <td>
-                            <img src="./teachers/uploads/<?= htmlspecialchars($teacher['image']) ?>" alt="Фото" style="width: 50px; height: 50px;">
+                            <img src="<?= htmlspecialchars(museum_upload_src('teachers', (string)$teacher['image'])) ?>" alt="Фото" style="width: 50px; height: 50px;">
                         </td>
                         <td><?= htmlspecialchars($teacher['name']) ?></td>
                         <td><?= admin_preview($teacher['description']) ?></td>

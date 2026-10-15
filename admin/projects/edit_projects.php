@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../../config.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 // Проверка авторизации
 if (!isset($_SESSION['user_id'])) {
@@ -38,7 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Обработка фото
     $photo = $project['photo'];
-    $target_dir = "assets/images/";
+    $target_dir = museum_upload_dir('projects');
+    if ($target_dir === null) {
+        echo "Папка для фото недоступна для записи!";
+        exit;
+    }
+    $target_dir .= '/';
     if (!empty($_FILES['photo']['name'])) {
         $clean_name = str_replace(' ', '_', basename($_FILES['photo']['name']));
         $target_file = $target_dir . $clean_name;
@@ -150,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label class="form-label">Главное фото</label>
                 <input class="form-control" type="file" name="photo" accept="image/*">
                     <?php if (!empty($project['photo'])): ?>
-                        <p>Текущее фото: <br><img src="assets/images/<?= htmlspecialchars($project['photo']) ?>" width="120"></p>
+                        <p>Текущее фото: <br><img src="<?= htmlspecialchars(museum_upload_src('projects', (string)$project['photo'])) ?>" width="120"></p>
                     <?php endif; ?>
                 </div>
 
@@ -160,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <?php if (!empty($project['gallery'])): ?>
                         <p>Текущая галерея:</p>
                         <?php foreach (explode(',', $project['gallery']) as $img): ?>
-                            <img class="gallery-thumb" src="assets/images/<?= htmlspecialchars($img) ?>" alt="Gallery Image">
+                            <img class="gallery-thumb" src="<?= htmlspecialchars(museum_upload_src('projects', (string)$img)) ?>" alt="Gallery Image">
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
