@@ -39,21 +39,24 @@ $museum_page_title = $lang['history_title'];
 <div class="timeline">
     <?php while ($row = mysqli_fetch_assoc($result)): ?>
         <article class="timeLine-item">
-            <div class="check"><i class="bi bi-bookmark-check-fill"></i></div>
-            <div class="date"><?= htmlspecialchars($row['title']) ?></div>
-            <div class="text"><?= nl2br(htmlspecialchars($row['content'])) ?></div>
-            <?php if ($is_logged_in): ?>
-                <div class="timeline-footer">
-                    <a href="../admin/history/edit_history.php?id=<?= (int)$row['id'] ?>" class="museum-btn museum-btn--info"><?= htmlspecialchars($lang['edit']) ?></a>
-                    <a href="?delete_id=<?= (int)$row['id'] ?>&lang=<?= urlencode($language) ?>" class="museum-btn museum-btn--danger" onclick="return confirm('<?= htmlspecialchars($lang['delete_confirm']) ?>')"><?= htmlspecialchars($lang['delete']) ?></a>
-                </div>
-            <?php endif; ?>
+            <div class="timeLine-item__card">
+                <header class="timeLine-item__head">
+                    <span class="timeLine-item__year"><?= htmlspecialchars($row['title']) ?></span>
+                </header>
+                <p class="timeLine-item__text"><?= nl2br(htmlspecialchars($row['content'])) ?></p>
+                <?php if ($is_logged_in): ?>
+                    <div class="timeline-footer">
+                        <a href="../admin/history/edit_history.php?id=<?= (int)$row['id'] ?>" class="museum-btn museum-btn--info"><?= htmlspecialchars($lang['edit']) ?></a>
+                        <a href="?delete_id=<?= (int)$row['id'] ?>&lang=<?= urlencode($language) ?>" class="museum-btn museum-btn--danger" onclick="return confirm('<?= htmlspecialchars($lang['delete_confirm']) ?>')"><?= htmlspecialchars($lang['delete']) ?></a>
+                    </div>
+                <?php endif; ?>
+            </div>
         </article>
     <?php endwhile; ?>
 </div>
 
 <?php if ($is_logged_in): ?>
-    <div style="margin-top: 2rem;">
+    <div class="timeline-add">
         <a href="../admin/history/add_history.php" class="museum-btn"><?= htmlspecialchars($lang['add_history']) ?></a>
     </div>
 <?php endif; ?>

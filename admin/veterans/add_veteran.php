@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['message_type'] = 'error';
     } else {
         // Если всё прошло успешно, добавляем запись в базу
-        $query = "INSERT INTO veterans (name, biography, photo) VALUES ('$name', '$biography', '$photo')";
+        $query = "INSERT INTO veterans (name, biography, photo, name_ru, biography_ru) VALUES ('$name', '$biography', '$photo', '$name', '$biography')";
         if (mysqli_query($conn, $query)) {
             $_SESSION['message'] = 'Ветеран добавлен успешно!';
             $_SESSION['message_type'] = 'success';
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    header('Location: admin/manage_veterans.php');
+    header('Location: ../manage_veterans.php');
     exit;
 }
 ?>

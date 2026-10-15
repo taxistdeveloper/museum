@@ -14,7 +14,10 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 }
 
 // Получение выбранного языка
-$lang = isset($_GET['lang']) ? $_GET['lang'] : 'ru'; // По умолчанию русский
+$lang = $_GET['lang'] ?? 'ru';
+if (!in_array($lang, ['ru', 'kz', 'en'], true)) {
+    $lang = 'ru';
+}
 
 // Подготовленный запрос на получение информации о ветеране
 $query_veteran = "SELECT * FROM veterans WHERE id = ?";
@@ -56,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($_FILES["photo"]["error"] !== UPLOAD_ERR_OK) {
             $_SESSION['message'] = 'Ошибка загрузки: ' . $_FILES["photo"]["error"];
             $_SESSION['message_type'] = 'error';
-            header('Location: ' . $_SERVER['PHP_SELF'] . "?id=$veteran_id&lang=$lang");
+            header('Location: ?id=' . $veteran_id . '&lang=' . rawurlencode($lang));
             exit;
         }
 
@@ -64,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
             $_SESSION['message'] = 'Ошибка при сохранении файла!';
             $_SESSION['message_type'] = 'error';
-            header('Location: ' . $_SERVER['PHP_SELF'] . "?id=$veteran_id&lang=$lang");
+            header('Location: ?id=' . $veteran_id . '&lang=' . rawurlencode($lang));
             exit;
         }
     } else {
@@ -72,10 +75,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $photo = $veteran['photo'];
     }
 
-    // Обновляем информацию в базе данных
-    $query = "UPDATE veterans SET name_$lang = ?, biography_$lang = ?, photo = ? WHERE id = ?";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "sssi", $name, $biography, $photo, $veteran_id);
+    // Список в админке читает name/biography, сайт — name_ru и остальные языки.
+    if ($lang === 'ru') {
+        $query = "UPDATE veterans SET name = ?, biography = ?, name_ru = ?, biography_ru = ?, photo = ? WHERE id = ?";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "sssssi", $name, $biography, $name, $biography, $photo, $veteran_id);
+    } else {
+        $query = "UPDATE veterans SET name_$lang = ?, biography_$lang = ?, photo = ? WHERE id = ?";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "sssi", $name, $biography, $photo, $veteran_id);
+    }
 
     if (mysqli_stmt_execute($stmt)) {
         $_SESSION['message'] = 'Данные ветерана успешно обновлены!';
@@ -87,26 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     mysqli_stmt_close($stmt);
 
-    header('Location: ?id=' . $veteran_id . '&lang=' . $lang);
-    exit;
-
-
-    // Обновляем информацию в базе данных
-    $query = "UPDATE veterans SET name_$lang = ?, biography_$lang = ?, photo = ? WHERE id = ?";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "sssi", $name, $biography, $photo, $veteran_id);
-
-    if (mysqli_stmt_execute($stmt)) {
-        $_SESSION['message'] = 'Данные ветерана успешно обновлены!';
-        $_SESSION['message_type'] = 'success';
-    } else {
-        $_SESSION['message'] = 'Ошибка при обновлении данных: ' . mysqli_error($conn);
-        $_SESSION['message_type'] = 'error';
-    }
-
-    mysqli_stmt_close($stmt);
-
-    header('Location: ?id=' . $veteran_id . '&lang=' . $lang);
+    header('Location: ?id=' . $veteran_id . '&lang=' . rawurlencode($lang));
     exit;
 }
 

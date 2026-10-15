@@ -10,7 +10,7 @@ $id = $_GET['id'] ?? null;
 if (!$id) {
     $_SESSION['message'] = 'Некорректный запрос.';
     $_SESSION['message_type'] = 'error';
-    header('Location: admin/manage_veterans.php');
+    header('Location: ../manage_veterans.php');
     exit;
 }
 
@@ -27,5 +27,5 @@ if ($stmt->execute()) {
     $_SESSION['message_type'] = 'error';
 }
 
-header('Location: admin/manage_veterans.php');
+header('Location: ../manage_veterans.php');
 exit;
